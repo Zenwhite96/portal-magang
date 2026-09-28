@@ -1,0 +1,28 @@
+# Dependencies
+/vendor/
+/node_modules/
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+*.tmp
+
+# PHP Cache
+*.cache
+
+# Environment (jangan push konfigurasi sensitif)
+.env
+config.local.php
