@@ -19,7 +19,7 @@
 // Cara dapat ID: buka Google Sheets → salin dari URL:
 // https://docs.google.com/spreadsheets/d/[SPREADSHEET_ID]/edit
 // ================================================================
-const SPREADSHEET_ID = 'GANTI_DENGAN_SPREADSHEET_ID_ANDA';
+const SPREADSHEET_ID = '11Ibq9Vb87abRz3G4pZYC9xkNqWvgDp7d0t_idUDgDHw';
 
 // Sheet Names (buat sheet ini di Google Sheets Anda)
 const SHEET_JADWAL  = 'Jadwal';
