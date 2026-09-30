@@ -1,555 +1,836 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Magang — Sistem Informasi Pemagangan</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Portal Magang — UNAS PASIM</title>
 
-    <!-- ============================================================
-         TAILWIND CSS via CDN
-         ============================================================ -->
-    <script src="https://cdn.tailwindcss.com"></script>
+<!-- Google Fonts — sama dengan portal induk -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- FontAwesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- ============================================================
-         FONT: Inter (Google Fonts)
-         ============================================================ -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   ROOT — Design Token UNAS PASIM
+   ============================================================ */
+:root {
+    --bg:         #050914;
+    --bg2:        #0a1020;
+    --card-bg:    rgba(16,24,43,0.7);
+    --sidebar-bg: linear-gradient(180deg,#06101f 0%,#0d1e3a 100%);
+    --cyan:       #00f3ff;
+    --purple:     #9d4edd;
+    --green:      #00ff88;
+    --gold:       #d4af37;
+    --text:       #e0e6ed;
+    --muted:      #8b9bb4;
+    --border:     rgba(0,243,255,0.12);
+    --border2:    rgba(255,255,255,0.06);
+    --glow-c:     0 0 20px rgba(0,243,255,0.25);
+    --glow-p:     0 0 20px rgba(157,78,221,0.25);
+    --glow-g:     0 0 20px rgba(0,255,136,0.2);
+}
 
-    <!-- ============================================================
-         TAILWIND CONFIG — Custom Palette Universitas
-         ============================================================ -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    colors: {
-                        primary: {
-                            50:  '#eff6ff',
-                            100: '#dbeafe',
-                            200: '#bfdbfe',
-                            300: '#93c5fd',
-                            400: '#60a5fa',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            800: '#1e40af',
-                            900: '#1e3a8a',
-                            950: '#172554',
-                        },
-                        navy: {
-                            800: '#0f2557',
-                            900: '#0a1a3d',
-                        }
-                    },
-                    animation: {
-                        'fade-in':    'fadeIn .35s ease-out',
-                        'slide-up':   'slideUp .4s ease-out',
-                        'slide-down': 'slideDown .35s ease-out',
-                        'pulse-soft': 'pulseSoft 2s infinite',
-                        'spin-slow':  'spin 2s linear infinite',
-                    },
-                    keyframes: {
-                        fadeIn:     { '0%': { opacity: '0' },                    '100%': { opacity: '1' } },
-                        slideUp:    { '0%': { opacity: '0', transform: 'translateY(24px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
-                        slideDown:  { '0%': { opacity: '0', transform: 'translateY(-12px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
-                        pulseSoft:  { '0%,100%': { opacity: '1' }, '50%': { opacity: '.65' } },
-                    }
-                }
-            }
-        }
-    </script>
+/* ── Reset ── */
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+    font-family:'Rajdhani',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100dvh;
+    background-image:
+        radial-gradient(circle at 15% 50%,rgba(0,243,255,0.04),transparent 30%),
+        radial-gradient(circle at 85% 20%,rgba(157,78,221,0.04),transparent 30%);
+}
 
-    <style>
-        /* ── Global ─────────────────────────────────── */
-        * { box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #f0f4ff; }
+/* ── Typography ── */
+h1,h2,h3,h4{font-family:'Orbitron',sans-serif;}
+p,label,span,td,th,input,select,textarea,button{font-family:'Rajdhani',sans-serif;}
 
-        /* ── Page Transition ─────────────────────────── */
-        .page          { display: none; opacity: 0; transform: translateY(18px); transition: opacity .35s ease, transform .35s ease; }
-        .page.active   { display: block; opacity: 1; transform: translateY(0); }
-        .page.leaving  { opacity: 0; transform: translateY(-12px); transition: opacity .25s ease, transform .25s ease; }
+/* ============================================================
+   PAGE TRANSITION
+   ============================================================ */
+.page{display:none;opacity:0;transform:translateY(16px);transition:opacity .35s ease,transform .35s ease;}
+.page.active{display:block;opacity:1;transform:translateY(0);}
+.page.leaving{opacity:0;transform:translateY(-10px);transition:opacity .22s ease,transform .22s ease;}
 
-        /* ── Glass Card ──────────────────────────────── */
-        .glass {
-            background: rgba(255,255,255,.85);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            border: 1px solid rgba(255,255,255,.6);
-        }
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:rgba(0,243,255,0.3);border-radius:4px;}
 
-        /* ── Gradient BG ─────────────────────────────── */
-        .hero-bg {
-            background: linear-gradient(135deg, #0f2557 0%, #1d4ed8 50%, #3b82f6 100%);
-        }
+/* ============================================================
+   TOAST
+   ============================================================ */
+#toast{
+    position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;
+    min-width:280px;padding:.9rem 1.3rem;border-radius:.75rem;
+    font-weight:600;font-size:.95rem;
+    box-shadow:0 8px 32px rgba(0,0,0,.5);
+    transform:translateY(80px);opacity:0;
+    transition:transform .35s ease,opacity .35s ease;
+    border:1px solid rgba(255,255,255,0.08);
+}
+#toast.show{transform:translateY(0);opacity:1;}
 
-        /* ── Sidebar ─────────────────────────────────── */
-        .sidebar { min-height: 100vh; background: linear-gradient(180deg, #0f2557 0%, #1e40af 100%); }
+/* ============================================================
+   MODAL
+   ============================================================ */
+.modal-overlay{background:rgba(5,9,20,.75);backdrop-filter:blur(8px);}
+#modalBox{
+    background:#0d1e3a;
+    border:1px solid var(--border);
+    border-radius:1rem;
+    box-shadow:var(--glow-c);
+}
+#modalTitle{color:var(--cyan);}
 
-        /* ── Nav active ──────────────────────────────── */
-        .nav-item.active { background: rgba(255,255,255,.15); border-left: 3px solid #93c5fd; }
-        .nav-item { transition: background .2s, border-color .2s; }
-        .nav-item:hover:not(.active) { background: rgba(255,255,255,.08); }
+/* ============================================================
+   ████  LOGIN PAGE  ████
+   ============================================================ */
+#page-login{
+    min-height:100dvh;
+    display:flex;align-items:center;justify-content:center;
+    padding:1rem;
+    background:var(--bg);
+    background-image:
+        radial-gradient(circle at 20% 40%,rgba(0,243,255,0.07),transparent 40%),
+        radial-gradient(circle at 80% 60%,rgba(157,78,221,0.07),transparent 40%);
+}
+.login-card{
+    background:rgba(13,30,58,0.85);
+    backdrop-filter:blur(20px);
+    border:1px solid var(--border);
+    border-radius:1.25rem;
+    padding:2.5rem 2rem;
+    width:100%;max-width:440px;
+    box-shadow:var(--glow-c),0 32px 64px rgba(0,0,0,.5);
+    animation:slideUp .4s ease-out;
+}
+.login-logo{
+    width:72px;height:72px;
+    background:linear-gradient(135deg,rgba(0,243,255,.15),rgba(157,78,221,.15));
+    border:1px solid var(--border);
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 1.2rem;
+    font-size:2rem;
+}
+.login-title{
+    text-align:center;
+    font-size:1.5rem;letter-spacing:1px;
+    background:linear-gradient(90deg,var(--cyan),var(--purple));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    margin-bottom:.35rem;
+}
+.login-sub{text-align:center;color:var(--muted);font-size:.95rem;margin-bottom:1.8rem;}
 
-        /* ── Table ───────────────────────────────────── */
-        .tbl-head { background: linear-gradient(90deg, #1e40af 0%, #2563eb 100%); }
-        .tbl-row:hover { background: #eff6ff; transition: background .15s; }
+.input-neon{
+    width:100%;padding:.8rem 1rem;
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(0,243,255,.25);
+    border-radius:.65rem;color:var(--text);
+    font-size:1rem;font-family:'Rajdhani',sans-serif;
+    transition:border-color .25s,box-shadow .25s;
+    outline:none;
+}
+.input-neon::placeholder{color:var(--muted);}
+.input-neon:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,243,255,.12);}
+.input-neon.error{border-color:#ff4d6d;box-shadow:0 0 0 3px rgba(255,77,109,.15);}
 
-        /* ── Badge ───────────────────────────────────── */
-        .badge-valid   { background:#dcfce7; color:#15803d; }
-        .badge-pending { background:#fef9c3; color:#a16207; }
-        .badge-reject  { background:#fee2e2; color:#b91c1c; }
+.btn-login{
+    width:100%;padding:.85rem;margin-top:1rem;
+    background:linear-gradient(135deg,rgba(0,243,255,.18),rgba(157,78,221,.18));
+    border:1px solid var(--border);
+    border-radius:.65rem;
+    color:var(--cyan);font-family:'Orbitron',sans-serif;
+    font-size:.85rem;font-weight:600;letter-spacing:1px;
+    cursor:pointer;
+    transition:all .25s;
+}
+.btn-login:hover{
+    background:linear-gradient(135deg,rgba(0,243,255,.28),rgba(157,78,221,.28));
+    box-shadow:var(--glow-c);transform:translateY(-2px);
+}
+.btn-login:active{transform:translateY(0);}
 
-        /* ── Stat Card ───────────────────────────────── */
-        .stat-card { background: white; border-radius: 1rem; padding: 1.5rem;
-                     box-shadow: 0 4px 20px rgba(30,64,175,.08);
-                     transition: transform .25s, box-shadow .25s; }
-        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(30,64,175,.14); }
+.key-pill{
+    display:inline-flex;align-items:center;gap:.35rem;
+    padding:.35rem .8rem;border-radius:2rem;
+    font-size:.8rem;font-weight:600;cursor:pointer;
+    border:1px solid;transition:all .2s;
+    font-family:'Rajdhani',sans-serif;
+}
+.pill-cyan{color:var(--cyan);border-color:rgba(0,243,255,.3);background:rgba(0,243,255,.06);}
+.pill-cyan:hover{background:rgba(0,243,255,.14);}
+.pill-purple{color:var(--purple);border-color:rgba(157,78,221,.3);background:rgba(157,78,221,.06);}
+.pill-purple:hover{background:rgba(157,78,221,.14);}
+.pill-gold{color:var(--gold);border-color:rgba(212,175,55,.3);background:rgba(212,175,55,.06);}
+.pill-gold:hover{background:rgba(212,175,55,.14);}
 
-        /* ── Input Focus Ring ────────────────────────── */
-        .input-focus { transition: border-color .2s, box-shadow .2s; }
-        .input-focus:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,.18); outline: none; }
+.info-box{
+    background:rgba(0,243,255,.05);
+    border:1px solid rgba(0,243,255,.15);
+    border-radius:.65rem;padding:.85rem 1rem;
+    font-size:.85rem;color:var(--muted);margin-top:1.2rem;
+    line-height:1.6;
+}
+.info-box code{
+    background:rgba(0,243,255,.1);color:var(--cyan);
+    padding:.1rem .35rem;border-radius:.25rem;font-size:.8rem;
+}
 
-        /* ── Spinner ─────────────────────────────────── */
-        .spinner { border: 3px solid #bfdbfe; border-top-color: #2563eb; border-radius: 50%;
-                   width: 22px; height: 22px; animation: spin .75s linear infinite; display: inline-block; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+/* ============================================================
+   ████  DASHBOARD LAYOUT  ████
+   ============================================================ */
+#page-dashboard{min-height:100dvh;}
+.dashboard-wrap{display:flex;min-height:100dvh;}
 
-        /* ── Toast ───────────────────────────────────── */
-        #toast { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 9999;
-                 min-width: 280px; padding: 1rem 1.4rem; border-radius: .75rem;
-                 font-weight: 600; font-size: .9rem; box-shadow: 0 8px 32px rgba(0,0,0,.18);
-                 transform: translateY(80px); opacity: 0; transition: transform .35s ease, opacity .35s ease; }
-        #toast.show { transform: translateY(0); opacity: 1; }
+/* ── Sidebar ── */
+.sidebar{
+    width:260px;min-height:100vh;
+    background:var(--sidebar-bg);
+    border-right:1px solid var(--border);
+    display:flex;flex-direction:column;
+    padding:1.25rem 1rem;gap:.35rem;
+    position:sticky;top:0;height:100vh;overflow-y:auto;
+}
+.sidebar-brand{
+    display:flex;align-items:center;gap:.75rem;
+    padding:.75rem .5rem 1.25rem;
+    border-bottom:1px solid var(--border2);margin-bottom:.5rem;
+}
+.sidebar-icon{
+    width:40px;height:40px;border-radius:.65rem;
+    background:rgba(0,243,255,.1);border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--cyan);font-size:1.1rem;flex-shrink:0;
+}
+.sidebar-brand-text{line-height:1.2;}
+.sidebar-brand-title{font-family:'Orbitron',sans-serif;font-size:.8rem;color:var(--cyan);}
+.sidebar-brand-sub{font-size:.75rem;color:var(--muted);}
 
-        /* ── Scrollbar ───────────────────────────────── */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #f0f4ff; }
-        ::-webkit-scrollbar-thumb { background: #93c5fd; border-radius: 4px; }
+.nav-item{
+    display:flex;align-items:center;gap:.75rem;
+    padding:.7rem 1rem;border-radius:.65rem;
+    color:var(--muted);font-size:.95rem;font-weight:500;
+    cursor:pointer;border:none;background:none;width:100%;text-align:left;
+    transition:all .2s;
+}
+.nav-item:hover{background:rgba(0,243,255,.07);color:var(--text);}
+.nav-item.active{
+    background:rgba(0,243,255,.12);
+    color:var(--cyan);
+    border-left:2px solid var(--cyan);
+}
+.nav-item .nav-icon{font-size:1rem;width:20px;text-align:center;}
 
-        /* ── Modal ───────────────────────────────────── */
-        .modal-overlay { background: rgba(15,37,87,.45); backdrop-filter: blur(4px); }
+.sidebar-user{
+    margin-top:auto;padding-top:1rem;
+    border-top:1px solid var(--border2);
+}
+.user-card{
+    background:rgba(0,243,255,.05);
+    border:1px solid var(--border);
+    border-radius:.75rem;padding:.85rem 1rem;
+}
+.user-label{font-size:.7rem;color:var(--muted);margin-bottom:.2rem;}
+.user-key{color:var(--cyan);font-weight:700;font-size:.95rem;font-family:'Orbitron',sans-serif;
+    font-size:.75rem;word-break:break-all;}
+.btn-logout{
+    width:100%;margin-top:.7rem;padding:.55rem;
+    background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.25);
+    border-radius:.5rem;color:#ff4d6d;font-size:.8rem;font-weight:600;
+    cursor:pointer;transition:all .2s;font-family:'Rajdhani',sans-serif;
+}
+.btn-logout:hover{background:rgba(255,77,109,.2);}
 
-        /* ── Responsive sidebar hide on mobile ───────── */
-        @media (max-width: 768px) {
-            .sidebar-wrap { position: fixed; inset: 0; z-index: 50; transform: translateX(-100%); transition: transform .3s ease; }
-            .sidebar-wrap.open { transform: translateX(0); }
-        }
-    </style>
+/* Sidebar overlay mobile */
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(5,9,20,.7);z-index:40;}
+.sidebar-wrap-mobile{transition:transform .3s ease;}
+@media(max-width:768px){
+    .sidebar{
+        position:fixed;inset:0 auto 0 0;z-index:50;
+        transform:translateX(-100%);transition:transform .3s ease;
+    }
+    .sidebar.open{transform:translateX(0);}
+    .sidebar-overlay.open{display:block;}
+    .main-content{margin-left:0!important;}
+}
+
+/* ── Main Content ── */
+.main-content{flex:1;display:flex;flex-direction:column;min-height:100vh;margin-left:260px;}
+@media(max-width:768px){.main-content{margin-left:0;}}
+
+/* ── Topbar ── */
+.topbar{
+    position:sticky;top:0;z-index:30;
+    background:rgba(5,9,20,.9);backdrop-filter:blur(16px);
+    border-bottom:1px solid var(--border2);
+    padding:.9rem 1.5rem;
+    display:flex;align-items:center;gap:.75rem;
+}
+.topbar-title{font-family:'Orbitron',sans-serif;font-size:.9rem;color:var(--cyan);}
+.topbar-sub{font-size:.8rem;color:var(--muted);}
+.btn-topbar{
+    display:flex;align-items:center;gap:.4rem;
+    padding:.5rem .9rem;border-radius:.5rem;
+    background:rgba(0,243,255,.07);border:1px solid var(--border);
+    color:var(--cyan);font-size:.8rem;font-weight:600;cursor:pointer;
+    transition:all .2s;font-family:'Rajdhani',sans-serif;
+}
+.btn-topbar:hover{background:rgba(0,243,255,.14);}
+.hamburger{
+    padding:.5rem;border-radius:.5rem;background:none;border:1px solid var(--border2);
+    color:var(--muted);cursor:pointer;display:none;transition:all .2s;
+}
+.hamburger:hover{border-color:var(--border);color:var(--text);}
+@media(max-width:768px){.hamburger{display:flex;align-items:center;justify-content:center;}}
+
+/* ── Tab Content Area ── */
+.tab-content{flex:1;padding:1.5rem;animation:fadeIn .3s ease-out;}
+@media(max-width:768px){.tab-content{padding:1rem;}}
+
+/* ============================================================
+   COMPONENTS
+   ============================================================ */
+
+/* ── Neon Card ── */
+.neon-card{
+    background:var(--card-bg);
+    border:1px solid var(--border2);
+    border-radius:1rem;overflow:hidden;
+    backdrop-filter:blur(10px);
+    transition:transform .25s,box-shadow .25s;
+}
+.neon-card:hover{transform:translateY(-3px);}
+.card-header-cyan{
+    background:linear-gradient(90deg,rgba(0,243,255,.12),rgba(0,243,255,.04));
+    border-bottom:1px solid rgba(0,243,255,.15);
+    padding:1rem 1.25rem;
+}
+.card-header-purple{
+    background:linear-gradient(90deg,rgba(157,78,221,.12),rgba(157,78,221,.04));
+    border-bottom:1px solid rgba(157,78,221,.15);
+    padding:1rem 1.25rem;
+}
+.card-header-green{
+    background:linear-gradient(90deg,rgba(0,255,136,.1),rgba(0,255,136,.03));
+    border-bottom:1px solid rgba(0,255,136,.12);
+    padding:1rem 1.25rem;
+}
+.card-header-gold{
+    background:linear-gradient(90deg,rgba(212,175,55,.12),rgba(212,175,55,.04));
+    border-bottom:1px solid rgba(212,175,55,.15);
+    padding:1rem 1.25rem;
+}
+.card-h-title{font-family:'Orbitron',sans-serif;font-size:.85rem;letter-spacing:.5px;}
+.card-h-sub{font-size:.8rem;color:var(--muted);margin-top:.2rem;}
+.card-body{padding:1.25rem;}
+
+/* ── Stat Card ── */
+.stat-card{
+    background:var(--card-bg);
+    border:1px solid var(--border2);
+    border-radius:.85rem;padding:1.25rem;
+    position:relative;overflow:hidden;
+    transition:transform .25s,box-shadow .25s;
+}
+.stat-card:hover{transform:translateY(-4px);}
+.stat-card::before{
+    content:'';position:absolute;top:-30px;right:-30px;
+    width:100px;height:100px;border-radius:50%;
+    opacity:.1;
+}
+.stat-cyan{border-top:2px solid var(--cyan);}
+.stat-cyan::before{background:var(--cyan);}
+.stat-purple{border-top:2px solid var(--purple);}
+.stat-purple::before{background:var(--purple);}
+.stat-green{border-top:2px solid var(--green);}
+.stat-green::before{background:var(--green);}
+.stat-gold{border-top:2px solid var(--gold);}
+.stat-gold::before{background:var(--gold);}
+.stat-icon{font-size:1.5rem;margin-bottom:.6rem;}
+.stat-value{font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:700;}
+.stat-label{font-size:.85rem;color:var(--muted);margin-top:.2rem;}
+
+/* ── Input Neon (form inside dashboard) ── */
+.form-label{display:block;font-size:.85rem;font-weight:600;color:var(--muted);margin-bottom:.4rem;}
+.form-label span.req{color:#ff4d6d;}
+.form-input{
+    width:100%;padding:.75rem 1rem;
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:.6rem;color:var(--text);
+    font-size:.95rem;font-family:'Rajdhani',sans-serif;
+    transition:border-color .2s,box-shadow .2s;outline:none;
+}
+.form-input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,243,255,.1);}
+.form-input::placeholder{color:rgba(139,155,180,.5);}
+.form-group{margin-bottom:1rem;}
+
+/* ── Neon Button ── */
+.btn-neon-cyan{
+    display:inline-flex;align-items:center;gap:.5rem;
+    padding:.75rem 1.5rem;border-radius:.65rem;
+    background:rgba(0,243,255,.1);border:1px solid rgba(0,243,255,.3);
+    color:var(--cyan);font-weight:600;font-size:.9rem;cursor:pointer;
+    font-family:'Rajdhani',sans-serif;transition:all .25s;
+}
+.btn-neon-cyan:hover{background:rgba(0,243,255,.2);box-shadow:var(--glow-c);}
+.btn-neon-cyan:active{transform:scale(.97);}
+.btn-neon-cyan:disabled{opacity:.5;cursor:not-allowed;}
+
+.btn-neon-green{
+    display:inline-flex;align-items:center;gap:.4rem;
+    padding:.5rem 1rem;border-radius:.5rem;
+    background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.3);
+    color:var(--green);font-weight:600;font-size:.8rem;cursor:pointer;
+    font-family:'Rajdhani',sans-serif;transition:all .2s;
+}
+.btn-neon-green:hover{background:rgba(0,255,136,.2);}
+
+.btn-neon-red{
+    display:inline-flex;align-items:center;gap:.4rem;
+    padding:.5rem 1rem;border-radius:.5rem;
+    background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.3);
+    color:#ff4d6d;font-weight:600;font-size:.8rem;cursor:pointer;
+    font-family:'Rajdhani',sans-serif;transition:all .2s;
+}
+.btn-neon-red:hover{background:rgba(255,77,109,.2);}
+
+.btn-neon-purple{
+    display:inline-flex;align-items:center;gap:.4rem;
+    padding:.5rem 1rem;border-radius:.5rem;
+    background:rgba(157,78,221,.1);border:1px solid rgba(157,78,221,.3);
+    color:var(--purple);font-weight:600;font-size:.8rem;cursor:pointer;
+    font-family:'Rajdhani',sans-serif;transition:all .2s;
+}
+.btn-neon-purple:hover{background:rgba(157,78,221,.2);}
+
+/* ── Table ── */
+.neon-table{width:100%;border-collapse:collapse;font-size:.9rem;}
+.neon-table thead tr{
+    background:linear-gradient(90deg,rgba(0,243,255,.1),rgba(157,78,221,.08));
+    border-bottom:1px solid rgba(0,243,255,.2);
+}
+.neon-table th{
+    padding:.85rem 1rem;text-align:left;
+    font-family:'Orbitron',sans-serif;font-size:.7rem;
+    color:var(--cyan);letter-spacing:.5px;white-space:nowrap;
+}
+.neon-table td{
+    padding:.8rem 1rem;border-bottom:1px solid var(--border2);
+    color:var(--text);vertical-align:middle;
+}
+.neon-table tbody tr:hover{background:rgba(0,243,255,.04);}
+.neon-table tbody tr:last-child td{border-bottom:none;}
+
+/* ── Badges ── */
+.badge{display:inline-flex;align-items:center;gap:.3rem;padding:.3rem .75rem;border-radius:2rem;font-size:.75rem;font-weight:600;}
+.badge-valid{background:rgba(0,255,136,.1);color:var(--green);border:1px solid rgba(0,255,136,.25);}
+.badge-pending{background:rgba(212,175,55,.1);color:var(--gold);border:1px solid rgba(212,175,55,.25);}
+.badge-reject{background:rgba(255,77,109,.1);color:#ff4d6d;border:1px solid rgba(255,77,109,.25);}
+
+/* ── Skeleton ── */
+.skeleton{background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(0,243,255,.06) 50%,rgba(255,255,255,.04) 75%);
+    background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:.5rem;}
+@keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+
+/* ── Spinner ── */
+.spinner{
+    width:20px;height:20px;border-radius:50%;
+    border:2px solid rgba(0,243,255,.2);border-top-color:var(--cyan);
+    animation:spin .7s linear infinite;display:inline-block;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── Empty State ── */
+.empty-state{
+    padding:3.5rem 1rem;text-align:center;
+}
+.empty-state i{font-size:2.5rem;color:rgba(139,155,180,.3);margin-bottom:1rem;display:block;}
+.empty-state p{color:var(--muted);font-size:.95rem;}
+
+/* ── Grid ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+@media(max-width:900px){.grid-4{grid-template-columns:1fr 1fr;}.grid-3{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
+
+/* ── Schedule Card ── */
+.jadwal-card{
+    background:var(--card-bg);
+    border:1px solid var(--border2);
+    border-left:3px solid var(--cyan);
+    border-radius:.85rem;padding:1.25rem;
+    transition:all .25s;
+}
+.jadwal-card:hover{border-left-color:var(--purple);box-shadow:var(--glow-p);transform:translateY(-3px);}
+.jadwal-meta{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0;}
+.jadwal-meta-item{
+    display:flex;align-items:center;gap:.35rem;
+    background:rgba(255,255,255,.04);border:1px solid var(--border2);
+    border-radius:.4rem;padding:.3rem .65rem;font-size:.8rem;color:var(--muted);
+}
+.jadwal-meta-item i{color:var(--cyan);font-size:.75rem;}
+
+/* ── Animations ── */
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes slideUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── Overflow table ── */
+.table-wrap{overflow-x:auto;border-radius:.85rem;border:1px solid var(--border2);}
+
+/* ── Error box ── */
+.error-box{
+    background:rgba(255,77,109,.07);border:1px solid rgba(255,77,109,.25);
+    border-radius:.85rem;padding:2rem;text-align:center;
+}
+.error-box i{font-size:2.5rem;color:#ff4d6d;margin-bottom:1rem;display:block;}
+.error-box h3{color:#ff4d6d;margin-bottom:.5rem;font-size:1rem;}
+.error-box p{color:var(--muted);font-size:.85rem;margin-bottom:1rem;}
+.error-detail{
+    background:rgba(0,0,0,.3);border-radius:.5rem;padding:.75rem;
+    text-align:left;font-size:.78rem;color:var(--muted);margin-bottom:1rem;
+    line-height:1.6;
+}
+
+/* ── Alert ── */
+.alert{display:flex;align-items:flex-start;gap:.75rem;padding:.85rem 1rem;border-radius:.65rem;font-size:.88rem;margin-bottom:1rem;}
+.alert-warn{background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.2);color:var(--gold);}
+.alert-info{background:rgba(0,243,255,.06);border:1px solid rgba(0,243,255,.15);color:var(--cyan);}
+</style>
 </head>
+<body>
 
-<body class="min-h-screen">
-
-<!-- ██████████████████████████████████████████████████████████████
-     TOAST NOTIFICATION
-     ██████████████████████████████████████████████████████████████ -->
+<!-- ══════════════════════════════════════════════════════════
+     TOAST
+     ══════════════════════════════════════════════════════════ -->
 <div id="toast"></div>
 
-<!-- ██████████████████████████████████████████████████████████████
+<!-- ══════════════════════════════════════════════════════════
      PAGE: LOGIN
-     ██████████████████████████████████████████████████████████████ -->
-<div id="page-login" class="page active">
-    <div class="hero-bg min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+     ══════════════════════════════════════════════════════════ -->
+<div id="page-login" class="page active" style="display:flex;">
+    <div class="login-card">
+        <div class="login-logo">🎓</div>
+        <h1 class="login-title">PORTAL MAGANG</h1>
+        <p class="login-sub">Sistem Informasi Pemagangan · UNAS PASIM</p>
 
-        <!-- Decorative circles -->
-        <div class="absolute top-[-80px] left-[-80px] w-96 h-96 rounded-full bg-white opacity-5"></div>
-        <div class="absolute bottom-[-60px] right-[-60px] w-80 h-80 rounded-full bg-blue-300 opacity-10"></div>
-        <div class="absolute top-1/2 right-10 w-48 h-48 rounded-full bg-blue-200 opacity-5"></div>
-
-        <div class="glass rounded-2xl shadow-2xl w-full max-w-md p-10 animate-slide-up relative z-10">
-
-            <!-- Logo + Title -->
-            <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-primary-700 to-primary-500 mb-4 shadow-lg">
-                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M12 14l9-5-9-5-9 5 9 5z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M12 14l6.16-3.422A12.083 12.083 0 0121 13c0 3.866-4.03 7-9 7s-9-3.134-9-7c0-.75.137-1.47.388-2.134L12 14z"/>
-                    </svg>
-                </div>
-                <h1 class="text-2xl font-extrabold text-primary-900 tracking-tight">Portal Magang</h1>
-                <p class="text-sm text-gray-500 mt-1">Sistem Informasi Pemagangan Universitas</p>
-            </div>
-
-            <!-- Key Input -->
-            <div class="mb-6">
-                <label class="block text-sm font-semibold text-gray-700 mb-2">
-                    <span class="flex items-center gap-2">
-                        <svg class="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
-                        </svg>
-                        Masukkan Key Akses
-                    </span>
-                </label>
-                <input id="loginKey"
-                       type="text"
-                       placeholder="Contoh: DOSEN001, MHS001, ADMIN999"
-                       class="input-focus w-full px-4 py-3 rounded-xl border-2 border-gray-200 text-gray-800 text-sm bg-white/70"
-                       autocomplete="off"
-                       onkeydown="if(event.key==='Enter') doLogin()"/>
-            </div>
-
-            <!-- Hint pills -->
-            <div class="flex flex-wrap gap-2 mb-6 text-xs">
-                <span class="bg-primary-100 text-primary-700 px-3 py-1 rounded-full font-medium cursor-pointer hover:bg-primary-200 transition"
-                      onclick="document.getElementById('loginKey').value='DOSEN001'">DOSEN001</span>
-                <span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full font-medium cursor-pointer hover:bg-emerald-200 transition"
-                      onclick="document.getElementById('loginKey').value='MHS001'">MHS001</span>
-                <span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full font-medium cursor-pointer hover:bg-amber-200 transition"
-                      onclick="document.getElementById('loginKey').value='ADMIN999'">ADMIN999</span>
-            </div>
-
-            <!-- Login Button -->
-            <button onclick="doLogin()"
-                    class="w-full py-3 rounded-xl bg-gradient-to-r from-primary-700 to-primary-500 hover:from-primary-800 hover:to-primary-600
-                           text-white font-bold text-base shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95 flex items-center justify-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
-                </svg>
-                Masuk ke Dashboard
-            </button>
-
-            <!-- Info -->
-            <div class="mt-6 bg-blue-50 border border-blue-200 rounded-xl p-3 text-xs text-blue-700">
-                <strong>ℹ️ Panduan Key:</strong><br>
-                Awalan <code class="bg-blue-100 px-1 rounded">DOSEN</code> → Dashboard Dosen<br>
-                Awalan <code class="bg-blue-100 px-1 rounded">MHS</code> → Dashboard Pemagang<br>
-                Awalan <code class="bg-blue-100 px-1 rounded">ADMIN</code> → Dashboard Admin
-            </div>
-
-            <p class="text-center text-xs text-gray-400 mt-5">© <?= date('Y') ?> Portal Magang Universitas</p>
+        <div class="form-group">
+            <label class="form-label" style="color:var(--muted);">
+                <i class="fa-solid fa-key" style="color:var(--cyan);margin-right:.35rem;"></i>
+                Masukkan Key Akses
+            </label>
+            <input id="loginKey" class="input-neon"
+                   type="text" placeholder="DOSEN001 · MHS001 · ADMIN999"
+                   autocomplete="off"
+                   onkeydown="if(event.key==='Enter')doLogin()"/>
         </div>
+
+        <!-- Quick fill pills -->
+        <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem;">
+            <span class="key-pill pill-cyan" onclick="fillKey('DOSEN001')"><i class="fa-solid fa-chalkboard-user"></i> DOSEN001</span>
+            <span class="key-pill pill-purple" onclick="fillKey('MHS001')"><i class="fa-solid fa-user-graduate"></i> MHS001</span>
+            <span class="key-pill pill-gold" onclick="fillKey('ADMIN999')"><i class="fa-solid fa-shield-halved"></i> ADMIN999</span>
+        </div>
+
+        <button class="btn-login" onclick="doLogin()">
+            <i class="fa-solid fa-arrow-right-to-bracket"></i>&nbsp;&nbsp;AKSES DASHBOARD
+        </button>
+
+        <div class="info-box">
+            <i class="fa-solid fa-circle-info" style="color:var(--cyan);"></i>
+            &nbsp;<strong style="color:var(--text);">Format Key:</strong><br>
+            Awalan <code>DOSEN</code> → Dashboard Dosen<br>
+            Awalan <code>MHS</code> → Dashboard Pemagang<br>
+            Awalan <code>ADMIN</code> → Dashboard Admin
+        </div>
+
+        <p style="text-align:center;font-size:.72rem;color:rgba(139,155,180,.4);margin-top:1.25rem;">
+            © <?= date('Y') ?> Portal Magang · UNAS PASIM · Sistem Terintegrasi
+        </p>
     </div>
 </div>
 
-<!-- ██████████████████████████████████████████████████████████████
-     DASHBOARD WRAPPER (shared layout)
-     ██████████████████████████████████████████████████████████████ -->
+<!-- ══════════════════════════════════════════════════════════
+     PAGE: DASHBOARD
+     ══════════════════════════════════════════════════════════ -->
 <div id="page-dashboard" class="page">
-    <div class="flex">
+    <div class="dashboard-wrap">
 
-        <!-- ── Sidebar ──────────────────────────────────────── -->
-        <div id="sidebarWrap" class="sidebar-wrap">
-            <aside class="sidebar w-64 flex flex-col p-5 gap-2 shadow-2xl">
-
-                <!-- Brand -->
-                <div class="flex items-center gap-3 px-2 py-4 mb-3">
-                    <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M12 14l9-5-9-5-9 5 9 5z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M12 14l6.16-3.422A12.083 12.083 0 0121 13c0 3.866-4.03 7-9 7s-9-3.134-9-7c0-.75.137-1.47.388-2.134L12 14z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="text-white font-bold text-sm leading-tight">Portal Magang</div>
-                        <div id="sidebarRole" class="text-blue-300 text-xs"></div>
-                    </div>
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                <div class="sidebar-brand-text">
+                    <div class="sidebar-brand-title">PORTAL MAGANG</div>
+                    <div id="sidebarRole" class="sidebar-brand-sub">—</div>
                 </div>
-
-                <!-- Nav items rendered dynamically -->
-                <nav id="sidebarNav" class="flex flex-col gap-1"></nav>
-
-                <div class="flex-1"></div>
-
-                <!-- User card -->
-                <div class="bg-white/10 rounded-xl p-3 mt-2">
-                    <div class="text-xs text-blue-200 mb-1">Masuk sebagai</div>
-                    <div id="sidebarUser" class="text-white font-semibold text-sm truncate"></div>
-                    <button onclick="doLogout()"
-                            class="mt-3 w-full text-xs text-red-300 hover:text-red-200 hover:bg-red-500/20 rounded-lg py-1.5 transition font-medium flex items-center gap-1 justify-center">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                        </svg>
-                        Keluar
+            </div>
+            <nav id="sidebarNav"></nav>
+            <div class="sidebar-user">
+                <div class="user-card">
+                    <div class="user-label">Masuk sebagai</div>
+                    <div id="sidebarUser" class="user-key">—</div>
+                    <button class="btn-logout" onclick="doLogout()">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> Keluar
                     </button>
                 </div>
-            </aside>
-        </div>
+            </div>
+        </aside>
 
-        <!-- Sidebar Overlay (mobile) -->
-        <div id="sidebarOverlay" class="hidden fixed inset-0 bg-black/40 z-40 md:hidden"
-             onclick="closeSidebar()"></div>
+        <!-- Sidebar overlay (mobile) -->
+        <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
 
-        <!-- ── Main Content ──────────────────────────────────── -->
-        <main class="flex-1 min-h-screen md:ml-64 flex flex-col">
-
+        <!-- Main -->
+        <main class="main-content">
             <!-- Topbar -->
-            <header class="bg-white/90 backdrop-blur-md border-b border-gray-200 px-5 py-4 flex items-center gap-3 sticky top-0 z-30 shadow-sm">
-                <!-- Mobile hamburger -->
-                <button class="md:hidden p-2 rounded-lg hover:bg-gray-100 text-gray-600"
-                        onclick="openSidebar()">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M4 6h16M4 12h16M4 18h16"/>
-                    </svg>
+            <header class="topbar">
+                <button class="hamburger" onclick="openSidebar()">
+                    <i class="fa-solid fa-bars"></i>
                 </button>
-                <div class="flex-1">
-                    <h2 id="topbarTitle" class="font-bold text-gray-800 text-lg leading-tight"></h2>
-                    <p id="topbarSub"   class="text-gray-400 text-xs"></p>
+                <div style="flex:1;">
+                    <div id="topbarTitle" class="topbar-title">—</div>
+                    <div id="topbarSub" class="topbar-sub"></div>
                 </div>
-                <!-- Refresh -->
-                <button onclick="refreshCurrentTab()"
-                        class="flex items-center gap-1.5 text-xs font-semibold text-primary-600 hover:bg-primary-50 px-3 py-2 rounded-lg transition">
-                    <svg id="refreshIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                    </svg>
-                    Refresh
+                <button class="btn-topbar" onclick="refreshTab()">
+                    <i id="refreshIcon" class="fa-solid fa-rotate-right"></i> Refresh
                 </button>
+                <a href="https://vcreed.my.id/universitas/" target="_blank"
+                   style="display:flex;align-items:center;gap:.4rem;padding:.5rem .9rem;border-radius:.5rem;
+                          background:rgba(157,78,221,.07);border:1px solid rgba(157,78,221,.25);
+                          color:var(--purple);font-size:.8rem;font-weight:600;text-decoration:none;
+                          font-family:'Rajdhani',sans-serif;transition:all .2s;"
+                   onmouseover="this.style.background='rgba(157,78,221,.15)'"
+                   onmouseout="this.style.background='rgba(157,78,221,.07)'">
+                    <i class="fa-solid fa-house"></i> Portal
+                </a>
             </header>
 
             <!-- Tab Content -->
-            <div id="tabContent" class="flex-1 p-5 md:p-7 animate-fade-in"></div>
-
+            <div id="tabContent" class="tab-content"></div>
         </main>
     </div>
 </div>
 
-<!-- ██████████████████████████████████████████████████████████████
-     MODAL (reusable)
-     ██████████████████████████████████████████████████████████████ -->
-<div id="modalOverlay" class="modal-overlay hidden fixed inset-0 z-50 flex items-center justify-center p-4">
-    <div id="modalBox" class="bg-white rounded-2xl shadow-2xl w-full max-w-lg animate-slide-up overflow-hidden">
-        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-            <h3 id="modalTitle" class="font-bold text-gray-800 text-lg"></h3>
-            <button onclick="closeModal()"
-                    class="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                </svg>
+<!-- ══════════════════════════════════════════════════════════
+     MODAL
+     ══════════════════════════════════════════════════════════ -->
+<div id="modalOverlay" class="modal-overlay" style="display:none;position:fixed;inset:0;z-index:50;align-items:center;justify-content:center;padding:1rem;">
+    <div id="modalBox" style="width:100%;max-width:520px;animation:slideUp .3s ease-out;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid var(--border2);">
+            <h3 id="modalTitle" style="font-size:.9rem;letter-spacing:.5px;"></h3>
+            <button onclick="closeModal()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.1rem;padding:.25rem;">
+                <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
-        <div id="modalBody" class="px-6 py-5"></div>
+        <div id="modalBody" style="padding:1.25rem;max-height:70vh;overflow-y:auto;"></div>
     </div>
 </div>
 
-<!-- ██████████████████████████████████████████████████████████████
-     JAVASCRIPT — CORE APPLICATION
-     ██████████████████████████████████████████████████████████████ -->
 <script>
 'use strict';
 
 /* ================================================================
-   ⚙️  KONFIGURASI — GANTI URL INI DENGAN GOOGLE APPS SCRIPT ANDA
+   ⚙️  KONFIGURASI UTAMA
    ================================================================
-   1. Buka Google Apps Script: https://script.google.com
-   2. Buat project baru → paste kode Apps Script dari README.md
-   3. Deploy → "New Deployment" → Type: "Web App"
-   4. Execute as: "Me" | Who has access: "Anyone"
-   5. Salin URL deployment → paste di bawah ini
+   LANGKAH WAJIB:
+   1. Buka https://script.google.com → Buat project → paste google-apps-script.js
+   2. Deploy → Web App → Execute as: Me → Who has access: Anyone
+   3. Salin URL deployment → paste di bawah ini (ganti seluruh string)
    ================================================================ */
-const scriptURL = 'https://script.google.com/macros/s/GANTI_DENGAN_URL_DEPLOYMENT_ANDA/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/GANTI_DENGAN_URL_DEPLOYMENT_ANDA/exec';
 
 /* ================================================================
    STATE
    ================================================================ */
-const state = {
-    user:    null,   // { key, role, name }
-    tab:     null,
-    loading: false,
-    cache:   {},
+const S = {
+    user:  null,  // { key, role, name }
+    tab:   null,
+    cache: {},
 };
 
 /* ================================================================
-   ROLE DEFINITIONS
+   ROLE CONFIG
    ================================================================ */
-const roles = {
+const ROLES = {
     DOSEN: {
         label: 'Dosen Pembimbing',
-        color: 'text-blue-300',
+        color: 'var(--cyan)',
         nav: [
-            { id: 'buat-jadwal',  icon: '📅', label: 'Buat Jadwal'      },
-            { id: 'daftar-tugas', icon: '📋', label: 'Daftar Tugas'     },
-            { id: 'validasi',     icon: '✅', label: 'Validasi Laporan'  },
+            { id:'buat-jadwal',  icon:'fa-calendar-plus',   label:'Buat Jadwal'      },
+            { id:'daftar-tugas', icon:'fa-list-check',       label:'Daftar Laporan'   },
+            { id:'validasi',     icon:'fa-circle-check',     label:'Validasi Laporan' },
         ],
     },
     MHS: {
-        label: 'Pemagang',
-        color: 'text-emerald-300',
+        label: 'Mahasiswa Pemagang',
+        color: 'var(--purple)',
         nav: [
-            { id: 'lihat-jadwal',  icon: '📅', label: 'Jadwal Magang'  },
-            { id: 'pilih-jadwal',  icon: '🗓️', label: 'Pilih Waktu'    },
-            { id: 'form-laporan',  icon: '📝', label: 'Laporan Magang'  },
+            { id:'lihat-jadwal', icon:'fa-calendar-days',   label:'Jadwal Magang'   },
+            { id:'pilih-jadwal', icon:'fa-calendar-check',  label:'Pilih Jadwal'    },
+            { id:'form-laporan', icon:'fa-file-pen',         label:'Kirim Laporan'   },
+            { id:'riwayat',      icon:'fa-clock-rotate-left',label:'Riwayat Saya'    },
         ],
     },
     ADMIN: {
         label: 'Administrator',
-        color: 'text-amber-300',
+        color: 'var(--gold)',
         nav: [
-            { id: 'rekap',     icon: '📊', label: 'Rekap Semua Aktivitas' },
-            { id: 'jadwal-all',icon: '📅', label: 'Semua Jadwal'          },
-            { id: 'users',     icon: '👥', label: 'Manajemen Key'          },
+            { id:'rekap',      icon:'fa-chart-bar',          label:'Rekap Aktivitas' },
+            { id:'jadwal-all', icon:'fa-table-list',          label:'Semua Jadwal'   },
+            { id:'info',       icon:'fa-circle-info',         label:'Info Sistem'    },
         ],
     },
 };
 
 /* ================================================================
-   PAGE TRANSITION UTILITY
+   PAGE TRANSITION
    ================================================================ */
-function showPage(pageId) {
-    const pages = document.querySelectorAll('.page');
-    const target = document.getElementById('page-' + pageId);
-    if (!target) return;
-
-    pages.forEach(p => {
-        if (p.classList.contains('active') && p !== target) {
+function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => {
+        if (p.classList.contains('active') && p.id !== 'page-' + id) {
             p.classList.add('leaving');
-            setTimeout(() => { p.classList.remove('active', 'leaving'); p.style.display = 'none'; }, 260);
+            setTimeout(() => { p.classList.remove('active','leaving'); p.style.display = 'none'; }, 240);
         }
     });
-
+    const tgt = document.getElementById('page-' + id);
+    if (!tgt) return;
     setTimeout(() => {
-        target.style.display = 'block';
-        requestAnimationFrame(() => { target.classList.add('active'); });
-    }, 80);
+        tgt.style.display = tgt.id === 'page-login' ? 'flex' : 'block';
+        requestAnimationFrame(() => tgt.classList.add('active'));
+    }, 60);
 }
 
 /* ================================================================
-   TOAST NOTIFICATION
+   TOAST
    ================================================================ */
-function showToast(msg, type = 'success') {
+function toast(msg, type='success') {
     const t = document.getElementById('toast');
     const cfg = {
-        success: { bg: '#dcfce7', color: '#15803d', icon: '✅' },
-        error:   { bg: '#fee2e2', color: '#b91c1c', icon: '❌' },
-        info:    { bg: '#dbeafe', color: '#1d4ed8', icon: 'ℹ️' },
-        warn:    { bg: '#fef9c3', color: '#a16207', icon: '⚠️' },
+        success: { bg:'rgba(0,255,136,.12)', color:'var(--green)', border:'rgba(0,255,136,.3)', icon:'✅' },
+        error:   { bg:'rgba(255,77,109,.12)', color:'#ff4d6d',     border:'rgba(255,77,109,.3)', icon:'❌' },
+        info:    { bg:'rgba(0,243,255,.1)',   color:'var(--cyan)', border:'var(--border)',        icon:'ℹ️' },
+        warn:    { bg:'rgba(212,175,55,.1)',  color:'var(--gold)', border:'rgba(212,175,55,.3)', icon:'⚠️' },
     };
     const c = cfg[type] || cfg.info;
-    t.style.background = c.bg;
-    t.style.color = c.color;
+    Object.assign(t.style, { background:c.bg, color:c.color, borderColor:c.border });
     t.textContent = c.icon + '  ' + msg;
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 3500);
 }
 
 /* ================================================================
-   MODAL UTILITY
+   MODAL
    ================================================================ */
-function openModal(title, bodyHTML) {
+function openModal(title, html) {
     document.getElementById('modalTitle').textContent = title;
-    document.getElementById('modalBody').innerHTML = bodyHTML;
-    document.getElementById('modalOverlay').classList.remove('hidden');
+    document.getElementById('modalBody').innerHTML = html;
+    const el = document.getElementById('modalOverlay');
+    el.style.display = 'flex';
 }
 function closeModal() {
-    document.getElementById('modalOverlay').classList.add('hidden');
+    document.getElementById('modalOverlay').style.display = 'none';
 }
 document.getElementById('modalOverlay').addEventListener('click', e => {
-    if (e.target === document.getElementById('modalOverlay')) closeModal();
+    if (e.target.id === 'modalOverlay') closeModal();
 });
 
 /* ================================================================
    SIDEBAR MOBILE
    ================================================================ */
 function openSidebar() {
-    document.getElementById('sidebarWrap').classList.add('open');
-    document.getElementById('sidebarOverlay').classList.remove('hidden');
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('sidebarOverlay').classList.add('open');
 }
 function closeSidebar() {
-    document.getElementById('sidebarWrap').classList.remove('open');
-    document.getElementById('sidebarOverlay').classList.add('hidden');
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('open');
 }
 
 /* ================================================================
-   API — Google Apps Script Fetch Wrapper
+   API WRAPPER
    ================================================================ */
-
-/**
- * GET data dari Google Sheets via Apps Script
- * @param {string} action - action parameter untuk GAS
- * @param {object} params - query params tambahan
- */
 async function apiGet(action, params = {}) {
-    const url = new URL(scriptURL);
+    const url = new URL(SCRIPT_URL);
     url.searchParams.set('action', action);
-    Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
-
-    const res = await fetch(url.toString(), { method: 'GET' });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    return res.json();
+    Object.entries(params).forEach(([k,v]) => url.searchParams.set(k, v));
+    const r = await fetch(url.toString(), { method:'GET' });
+    if (!r.ok) throw new Error('Server error HTTP ' + r.status);
+    return r.json();
 }
 
-/**
- * POST data ke Google Sheets via Apps Script
- * @param {string} action - action parameter untuk GAS
- * @param {object} data   - payload (akan di-JSON.stringify)
- */
 async function apiPost(action, data = {}) {
-    const payload = JSON.stringify({ action, ...data });
-    const res = await fetch(scriptURL, {
+    const r = await fetch(SCRIPT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: payload,
+        body: JSON.stringify({ action, ...data }),
     });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    return res.json();
+    if (!r.ok) throw new Error('Server error HTTP ' + r.status);
+    return r.json();
 }
 
 /* ================================================================
-   LOGIN
+   AUTH
    ================================================================ */
+function fillKey(k) { document.getElementById('loginKey').value = k; }
+
 function doLogin() {
     const raw = document.getElementById('loginKey').value.trim().toUpperCase();
-    if (!raw) { showToast('Masukkan Key Akses terlebih dahulu!', 'warn'); return; }
+    const inp = document.getElementById('loginKey');
+    if (!raw) { inp.classList.add('error'); toast('Masukkan Key Akses!', 'warn'); setTimeout(()=>inp.classList.remove('error'),1500); return; }
 
     let role = null;
-    if (raw.startsWith('DOSEN')) role = 'DOSEN';
-    else if (raw.startsWith('MHS')) role = 'MHS';
+    if (raw.startsWith('DOSEN'))      role = 'DOSEN';
+    else if (raw.startsWith('MHS'))   role = 'MHS';
     else if (raw.startsWith('ADMIN')) role = 'ADMIN';
 
     if (!role) {
-        showToast('Key tidak dikenali. Gunakan awalan DOSEN / MHS / ADMIN', 'error');
-        document.getElementById('loginKey').classList.add('border-red-400');
-        setTimeout(() => document.getElementById('loginKey').classList.remove('border-red-400'), 1500);
+        inp.classList.add('error');
+        toast('Key tidak valid. Gunakan awalan DOSEN / MHS / ADMIN', 'error');
+        setTimeout(()=>inp.classList.remove('error'),1500);
         return;
     }
 
-    state.user = { key: raw, role, name: raw };
-    sessionStorage.setItem('portalUser', JSON.stringify(state.user));
-    bootDashboard();
-    showToast('Selamat datang, ' + raw + '! 👋', 'success');
+    S.user = { key: raw, role };
+    sessionStorage.setItem('pmUser', JSON.stringify(S.user));
+    initDashboard();
+    toast('Selamat datang, ' + raw + ' 👋', 'success');
 }
 
-/* ================================================================
-   LOGOUT
-   ================================================================ */
 function doLogout() {
-    sessionStorage.removeItem('portalUser');
-    state.user = null;
-    state.tab  = null;
-    state.cache = {};
+    sessionStorage.removeItem('pmUser');
+    S.user = null; S.tab = null; S.cache = {};
     document.getElementById('loginKey').value = '';
     showPage('login');
-    showToast('Berhasil keluar. Sampai jumpa!', 'info');
+    toast('Berhasil keluar. Sampai jumpa!', 'info');
 }
 
 /* ================================================================
-   BOOT DASHBOARD
+   INIT DASHBOARD
    ================================================================ */
-function bootDashboard() {
-    const { role, key } = state.user;
-    const def = roles[role];
+function initDashboard() {
+    const { role, key } = S.user;
+    const def = ROLES[role];
 
-    // Sidebar role label
     document.getElementById('sidebarRole').textContent = def.label;
     document.getElementById('sidebarUser').textContent = key;
 
-    // Build sidebar nav
+    // Build nav
     const nav = document.getElementById('sidebarNav');
     nav.innerHTML = '';
-    def.nav.forEach((item, i) => {
+    def.nav.forEach(item => {
         const btn = document.createElement('button');
         btn.id = 'nav-' + item.id;
-        btn.className = 'nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-blue-100 hover:text-white w-full text-left';
-        btn.innerHTML = `<span class="text-base">${item.icon}</span><span>${item.label}</span>`;
+        btn.className = 'nav-item';
+        btn.innerHTML = `<i class="fa-solid ${item.icon} nav-icon"></i> ${item.label}`;
         btn.onclick = () => loadTab(item.id);
         nav.appendChild(btn);
     });
@@ -561,689 +842,774 @@ function bootDashboard() {
 /* ================================================================
    LOAD TAB
    ================================================================ */
-function loadTab(tabId) {
-    state.tab = tabId;
+const TAB_HANDLERS = {
+    'buat-jadwal':  tabBuatJadwal,
+    'daftar-tugas': tabDaftarTugas,
+    'validasi':     tabDaftarTugas,   // reuse dengan mode validasi
+    'lihat-jadwal': tabLihatJadwal,
+    'pilih-jadwal': tabPilihJadwal,
+    'form-laporan': tabFormLaporan,
+    'riwayat':      tabRiwayat,
+    'rekap':        tabRekap,
+    'jadwal-all':   tabJadwalAll,
+    'info':         tabInfo,
+};
+
+function loadTab(id) {
+    S.tab = id;
     closeSidebar();
-
-    // Update nav active state
     document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-    const activeBtn = document.getElementById('nav-' + tabId);
-    if (activeBtn) activeBtn.classList.add('active');
+    const btn = document.getElementById('nav-' + id);
+    if (btn) btn.classList.add('active');
 
-    // Render
-    const handlers = {
-        // DOSEN
-        'buat-jadwal':  renderBuatJadwal,
-        'daftar-tugas': renderDaftarTugas,
-        'validasi':     renderValidasi,
-        // MHS
-        'lihat-jadwal': renderLihatJadwal,
-        'pilih-jadwal': renderPilihJadwal,
-        'form-laporan': renderFormLaporan,
-        // ADMIN
-        'rekap':        renderRekap,
-        'jadwal-all':   renderJadwalAll,
-        'users':        renderUsers,
-    };
+    // Re-animate content
+    const tc = document.getElementById('tabContent');
+    tc.style.animation = 'none';
+    requestAnimationFrame(() => { tc.style.animation = 'fadeIn .3s ease-out'; });
 
-    const fn = handlers[tabId];
+    const fn = TAB_HANDLERS[id];
     if (fn) fn();
 }
 
-function refreshCurrentTab() {
-    const icon = document.getElementById('refreshIcon');
-    icon.classList.add('animate-spin-slow');
-    delete state.cache[state.tab];
-    loadTab(state.tab);
-    setTimeout(() => icon.classList.remove('animate-spin-slow'), 1000);
+function refreshTab() {
+    const ri = document.getElementById('refreshIcon');
+    ri.style.animation = 'spin .7s linear infinite';
+    delete S.cache[S.tab];
+    loadTab(S.tab);
+    setTimeout(() => ri.style.animation = '', 900);
 }
 
 /* ================================================================
-   HELPER — Set topbar
+   TOPBAR HELPER
    ================================================================ */
-function setTopbar(title, sub = '') {
+function setTop(title, sub='') {
     document.getElementById('topbarTitle').textContent = title;
-    document.getElementById('topbarSub').textContent  = sub;
+    document.getElementById('topbarSub').textContent = sub;
 }
 
 /* ================================================================
-   HELPER — Loading skeleton
+   SKELETON LOADING
    ================================================================ */
-function showSkeleton(lines = 4) {
-    let html = '<div class="space-y-3 animate-pulse">';
-    for (let i = 0; i < lines; i++) {
-        const w = ['w-full','w-5/6','w-4/6','w-3/4'][i % 4];
-        html += `<div class="h-5 bg-blue-100 rounded-lg ${w}"></div>`;
+function skeleton(rows=4) {
+    let h = '<div style="display:flex;flex-direction:column;gap:.75rem;max-width:800px;">';
+    for(let i=0;i<rows;i++){
+        const w = ['100%','80%','65%','90%'][i%4];
+        h += `<div class="skeleton" style="height:18px;width:${w};"></div>`;
     }
-    html += '</div>';
-    document.getElementById('tabContent').innerHTML = `<div class="max-w-4xl mx-auto">${html}</div>`;
+    h += '</div>';
+    document.getElementById('tabContent').innerHTML = `<div style="padding:.5rem;">${h}</div>`;
+}
+
+function emptyHTML(msg='Belum ada data.') {
+    return `<div class="empty-state"><i class="fa-solid fa-folder-open"></i><p>${msg}</p></div>`;
 }
 
 /* ================================================================
-   HELPER — Empty state
+   BADGE
    ================================================================ */
-function emptyState(msg = 'Belum ada data.') {
-    return `<div class="flex flex-col items-center justify-center py-16 text-gray-400">
-        <svg class="w-16 h-16 mb-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-        </svg>
-        <p class="font-medium text-sm">${msg}</p>
-    </div>`;
-}
-
-/* ================================================================
-   HELPER — Status badge
-   ================================================================ */
-function badge(status) {
-    const map = {
-        'Tervalidasi': '<span class="badge-valid px-2 py-0.5 rounded-full text-xs font-semibold">✅ Tervalidasi</span>',
-        'Menunggu':    '<span class="badge-pending px-2 py-0.5 rounded-full text-xs font-semibold">🕐 Menunggu</span>',
-        'Ditolak':     '<span class="badge-reject px-2 py-0.5 rounded-full text-xs font-semibold">❌ Ditolak</span>',
+function mkBadge(s) {
+    const m = {
+        'Tervalidasi': `<span class="badge badge-valid"><i class="fa-solid fa-check"></i> Tervalidasi</span>`,
+        'Menunggu':    `<span class="badge badge-pending"><i class="fa-regular fa-clock"></i> Menunggu</span>`,
+        'Ditolak':     `<span class="badge badge-reject"><i class="fa-solid fa-xmark"></i> Ditolak</span>`,
     };
-    return map[status] || `<span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full text-xs font-semibold">${status||'-'}</span>`;
+    return m[s] || `<span class="badge" style="background:rgba(255,255,255,.06);color:var(--muted);">${s||'-'}</span>`;
 }
 
 /* ================================================================
-   HELPER — Input field HTML
+   GET VALUE
    ================================================================ */
-function inputHTML(id, label, type = 'text', placeholder = '', required = true, extra = '') {
-    return `<div class="mb-4">
-        <label class="block text-sm font-semibold text-gray-700 mb-1.5">${label}${required ? ' <span class="text-red-500">*</span>' : ''}</label>
-        <input id="${id}" type="${type}" placeholder="${placeholder}"
-               class="input-focus w-full px-3.5 py-2.5 rounded-xl border-2 border-gray-200 text-sm text-gray-800 bg-white" ${required ? 'required' : ''} ${extra}/>
-    </div>`;
-}
-
-function textareaHTML(id, label, placeholder = '', required = true) {
-    return `<div class="mb-4">
-        <label class="block text-sm font-semibold text-gray-700 mb-1.5">${label}${required ? ' <span class="text-red-500">*</span>' : ''}</label>
-        <textarea id="${id}" rows="3" placeholder="${placeholder}"
-                  class="input-focus w-full px-3.5 py-2.5 rounded-xl border-2 border-gray-200 text-sm text-gray-800 bg-white resize-none" ${required ? 'required' : ''}></textarea>
-    </div>`;
-}
-
-function selectHTML(id, label, options = [], required = true) {
-    const opts = options.map(o => `<option value="${o.v}">${o.l}</option>`).join('');
-    return `<div class="mb-4">
-        <label class="block text-sm font-semibold text-gray-700 mb-1.5">${label}${required ? ' <span class="text-red-500">*</span>' : ''}</label>
-        <select id="${id}" class="input-focus w-full px-3.5 py-2.5 rounded-xl border-2 border-gray-200 text-sm text-gray-800 bg-white" ${required ? 'required' : ''}>
-            <option value="">-- Pilih --</option>${opts}
-        </select>
-    </div>`;
-}
+function gv(id) { const e = document.getElementById(id); return e ? e.value.trim() : ''; }
+function fmtDate(d) { try { return new Date(d).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}); } catch{ return d||'-'; } }
 
 /* ================================================================
-   HELPER — Form card wrapper
+   ██ TAB: BUAT JADWAL (DOSEN)
    ================================================================ */
-function formCard(title, subtitle, formHTML, btnLabel, btnFn) {
-    return `
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="bg-gradient-to-r from-primary-800 to-primary-600 px-6 py-4">
-            <h3 class="text-white font-bold text-base">${title}</h3>
-            <p class="text-blue-200 text-xs mt-0.5">${subtitle}</p>
-        </div>
-        <div class="p-6">
-            ${formHTML}
-            <button onclick="${btnFn}"
-                    class="mt-2 w-full py-3 rounded-xl bg-gradient-to-r from-primary-700 to-primary-500 text-white font-bold text-sm
-                           hover:from-primary-800 hover:to-primary-600 transition-all duration-200 active:scale-95 shadow flex items-center justify-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                </svg>
-                ${btnLabel}
-            </button>
-        </div>
-    </div>`;
-}
+function tabBuatJadwal() {
+    setTop('Buat Jadwal Magang', 'Tambahkan jadwal baru untuk para pemagang');
+    document.getElementById('tabContent').innerHTML = `
+    <div style="max-width:680px;display:flex;flex-direction:column;gap:1.25rem;">
 
-/* ================================================================
-   HELPER — Table wrapper
-   ================================================================ */
-function tableCard(title, subtitle, theadHTML, tbodyHTML) {
-    return `
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-            <div>
-                <h3 class="font-bold text-gray-800 text-base">${title}</h3>
-                <p class="text-gray-400 text-xs mt-0.5">${subtitle}</p>
+        <div class="neon-card" style="animation:slideUp .35s ease-out;">
+            <div class="card-header-cyan">
+                <div class="card-h-title" style="color:var(--cyan);">
+                    <i class="fa-solid fa-calendar-plus"></i> &nbsp;Formulir Jadwal Magang
+                </div>
+                <div class="card-h-sub">Isi semua field dengan benar sebelum menyimpan</div>
+            </div>
+            <div class="card-body">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Judul Jadwal <span class="req">*</span></label>
+                        <input id="jJudul" class="form-input" placeholder="Mis: Magang Semester Ganjil 2025">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ruang Magang <span class="req">*</span></label>
+                        <select id="jRuang" class="form-input">
+                            <option value="">— Pilih Ruang —</option>
+                            <option>Lab Komputer A</option>
+                            <option>Lab Komputer B</option>
+                            <option>Ruang Rapat 1</option>
+                            <option>Ruang Rapat 2</option>
+                            <option>Aula Utama</option>
+                            <option>Perpustakaan</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Tanggal Mulai <span class="req">*</span></label>
+                        <input id="jMulai" type="date" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tanggal Selesai <span class="req">*</span></label>
+                        <input id="jSelesai" type="date" class="form-input">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Deskripsi Tugas <span class="req">*</span></label>
+                    <textarea id="jTugas" class="form-input" rows="3" placeholder="Deskripsikan tugas yang harus dikerjakan pemagang..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Kuota Pemagang (orang) <span class="req">*</span></label>
+                    <input id="jKuota" type="number" min="1" max="50" class="form-input" placeholder="Contoh: 5">
+                </div>
+                <button id="btnSimpanJadwal" class="btn-neon-cyan" style="width:100%;justify-content:center;padding:.85rem;" onclick="submitJadwal()">
+                    <i class="fa-solid fa-floppy-disk"></i> &nbsp;Simpan Jadwal ke Google Sheets
+                </button>
             </div>
         </div>
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-                <thead class="tbl-head text-white text-xs uppercase tracking-wide">
-                    <tr>${theadHTML}</tr>
-                </thead>
-                <tbody>${tbodyHTML || emptyState()}</tbody>
-            </table>
+
+        <div class="alert alert-info" style="animation:slideUp .45s ease-out;">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>Jadwal yang tersimpan akan langsung muncul di dashboard pemagang untuk dipilih.</span>
         </div>
-    </div>`;
-}
-
-function th(label) { return `<th class="px-4 py-3 text-left font-semibold">${label}</th>`; }
-function td(val)   { return `<td class="px-4 py-3 text-gray-700">${val||'-'}</td>`; }
-
-/* ================================================================
-   ███████ DOSEN TABS ███████
-   ================================================================ */
-
-/* ── Buat Jadwal ────────────────────────────────────────────────── */
-function renderBuatJadwal() {
-    setTopbar('📅 Buat Jadwal Magang', 'Tambahkan jadwal & informasi tugas untuk pemagang');
-
-    const form = [
-        inputHTML('jdJudul',   'Judul Jadwal',   'text',     'Mis: Magang Semester Ganjil 2025'),
-        inputHTML('jdTanggal', 'Tanggal Mulai',  'date',     '', true),
-        inputHTML('jdSelesai', 'Tanggal Selesai','date',     '', true),
-        selectHTML('jdRuang', 'Ruang Magang', [
-            {v:'Lab Komputer A',l:'Lab Komputer A'},
-            {v:'Lab Komputer B',l:'Lab Komputer B'},
-            {v:'Ruang Rapat 1', l:'Ruang Rapat 1'},
-            {v:'Ruang Rapat 2', l:'Ruang Rapat 2'},
-            {v:'Aula Utama',    l:'Aula Utama'},
-        ]),
-        textareaHTML('jdTugas', 'Deskripsi Tugas', 'Deskripsikan tugas yang harus dikerjakan...'),
-        inputHTML('jdKuota', 'Kuota Pemagang (orang)', 'number', '5', true, 'min="1" max="50"'),
-    ].join('');
-
-    document.getElementById('tabContent').innerHTML = `
-    <div class="max-w-2xl mx-auto space-y-6 animate-slide-up">
-        ${formCard('Formulir Jadwal Magang', 'Isi detail jadwal yang akan ditampilkan kepada pemagang', form, 'Simpan Jadwal', 'submitJadwal()')}
-        <div id="jadwalPreview"></div>
     </div>`;
 }
 
 async function submitJadwal() {
-    const judul   = v('jdJudul');
-    const tanggal = v('jdTanggal');
-    const selesai = v('jdSelesai');
-    const ruang   = v('jdRuang');
-    const tugas   = v('jdTugas');
-    const kuota   = v('jdKuota');
+    const judul   = gv('jJudul');
+    const ruang   = gv('jRuang');
+    const mulai   = gv('jMulai');
+    const selesai = gv('jSelesai');
+    const tugas   = gv('jTugas');
+    const kuota   = gv('jKuota');
 
-    if (!judul || !tanggal || !selesai || !ruang || !tugas || !kuota) {
-        showToast('Semua field wajib diisi!', 'warn'); return;
+    if (!judul||!ruang||!mulai||!selesai||!tugas||!kuota) {
+        toast('Semua field wajib diisi!', 'warn'); return;
+    }
+    if (new Date(mulai) > new Date(selesai)) {
+        toast('Tanggal selesai harus setelah tanggal mulai!', 'warn'); return;
     }
 
-    setBtnLoading(true);
+    setLoading('btnSimpanJadwal', true, 'Menyimpan...');
     try {
         const res = await apiPost('buatJadwal', {
-            judul, tanggal, selesai, ruang, tugas, kuota,
-            dosenKey: state.user.key,
+            dosenKey: S.user.key, judul, ruang,
+            tanggal: mulai, selesai, tugas, kuota,
             timestamp: new Date().toISOString(),
         });
         if (res.status === 'ok') {
-            showToast('Jadwal berhasil disimpan ke Google Sheets! 🎉', 'success');
-            ['jdJudul','jdTanggal','jdSelesai','jdTugas','jdKuota'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).value=''; });
-            document.getElementById('jdRuang').value = '';
+            toast('Jadwal berhasil disimpan! 🎉', 'success');
+            ['jJudul','jRuang','jMulai','jSelesai','jTugas','jKuota'].forEach(id => {
+                const el = document.getElementById(id); if(el) el.value='';
+            });
         } else {
-            showToast('Gagal: ' + (res.message || 'Unknown error'), 'error');
+            toast('Gagal: ' + (res.message||'unknown'), 'error');
         }
-    } catch(e) {
-        showToast('Koneksi gagal: ' + e.message, 'error');
-    } finally {
-        setBtnLoading(false);
-    }
-}
-
-/* ── Daftar Tugas Pemagang ──────────────────────────────────────── */
-async function renderDaftarTugas() {
-    setTopbar('📋 Daftar Pekerjaan Pemagang', 'Laporan yang dikirim oleh para pemagang');
-    showSkeleton(5);
-
-    try {
-        const res = await apiGet('getLaporan', { dosenKey: state.user.key });
-        const rows = res.data || [];
-        const tbody = rows.length ? rows.map(r => `
-            <tr class="tbl-row border-b border-gray-50">
-                ${td(r.timestamp ? new Date(r.timestamp).toLocaleDateString('id-ID') : '-')}
-                ${td(r.mahasiswaKey)}
-                ${td(r.ruangMagang)}
-                ${td(`<span class="max-w-xs block truncate" title="${r.detailTugas}">${r.detailTugas}</span>`)}
-                ${td(badge(r.status))}
-                <td class="px-4 py-3">
-                    ${r.status !== 'Tervalidasi' ? `<button onclick="validasiLaporan('${r.id}','Tervalidasi')"
-                        class="text-xs bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-lg font-semibold transition mr-1">✅ Validasi</button>
-                    <button onclick="validasiLaporan('${r.id}','Ditolak')"
-                        class="text-xs bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg font-semibold transition">❌ Tolak</button>` : '<span class="text-gray-400 text-xs">Sudah divalidasi</span>'}
-                </td>
-            </tr>`).join('') : `<tr><td colspan="6">${emptyState('Belum ada laporan masuk')}</td></tr>`;
-
-        document.getElementById('tabContent').innerHTML = `
-        <div class="animate-slide-up">
-            ${tableCard('Laporan Pemagang', `Total: ${rows.length} laporan`,
-                [th('Tanggal'),th('Mahasiswa'),th('Ruang'),th('Tugas'),th('Status'),th('Aksi')].join(''),
-                tbody
-            )}
-        </div>`;
-    } catch(e) {
-        renderError(e);
-    }
-}
-
-/* ── Validasi ───────────────────────────────────────────────────── */
-async function renderValidasi() {
-    setTopbar('✅ Validasi Laporan', 'Validasi atau tolak laporan pemagang');
-    // Reuse daftar tugas
-    await renderDaftarTugas();
-    setTopbar('✅ Validasi Laporan', 'Klik tombol Validasi / Tolak pada baris yang diinginkan');
-}
-
-async function validasiLaporan(id, status) {
-    try {
-        const res = await apiPost('validasiLaporan', { id, status, dosenKey: state.user.key });
-        if (res.status === 'ok') {
-            showToast(`Laporan berhasil di-${status === 'Tervalidasi' ? 'validasi' : 'tolak'}! `, 'success');
-            delete state.cache['daftar-tugas'];
-            loadTab('daftar-tugas');
-        } else {
-            showToast('Gagal: ' + (res.message || ''), 'error');
-        }
-    } catch(e) {
-        showToast('Koneksi gagal: ' + e.message, 'error');
-    }
+    } catch(e) { toast('Koneksi gagal: ' + e.message, 'error'); }
+    finally { setLoading('btnSimpanJadwal', false, '<i class="fa-solid fa-floppy-disk"></i> &nbsp;Simpan Jadwal ke Google Sheets'); }
 }
 
 /* ================================================================
-   ███████ PEMAGANG TABS ███████
+   ██ TAB: DAFTAR TUGAS + VALIDASI (DOSEN)
    ================================================================ */
+async function tabDaftarTugas() {
+    const isValidasi = S.tab === 'validasi';
+    setTop(
+        isValidasi ? 'Validasi Laporan' : 'Daftar Laporan Pemagang',
+        isValidasi ? 'Approve atau tolak laporan yang masuk' : 'Semua laporan yang dikirim pemagang'
+    );
+    skeleton(5);
+    try {
+        const res = await apiGet('getLaporan', { dosenKey: S.user.key });
+        const rows = res.data || [];
 
-/* ── Lihat Jadwal ───────────────────────────────────────────────── */
-async function renderLihatJadwal() {
-    setTopbar('📅 Jadwal Magang', 'Daftar jadwal yang tersedia dari dosen pembimbing');
-    showSkeleton(4);
+        const tbody = rows.length ? rows.map(r => `
+            <tr>
+                <td>${fmtDate(r.tanggal||r.timestamp)}</td>
+                <td><span style="color:var(--cyan);font-family:'Orbitron',sans-serif;font-size:.75rem;">${r.mahasiswaKey||'-'}</span></td>
+                <td>${r.ruangMagang||'-'}</td>
+                <td style="max-width:200px;"><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${r.detailTugas||''}">${r.detailTugas||'-'}</span></td>
+                <td>${r.durasi ? r.durasi+' jam' : '-'}</td>
+                <td>${mkBadge(r.status)}</td>
+                <td>
+                    <div style="display:flex;gap:.4rem;flex-wrap:wrap;">
+                        ${r.status !== 'Tervalidasi' ? `
+                        <button class="btn-neon-green" onclick="aksiValidasi('${r.id}','Tervalidasi')">
+                            <i class="fa-solid fa-check"></i> Setuju
+                        </button>
+                        <button class="btn-neon-red" onclick="aksiValidasi('${r.id}','Ditolak')">
+                            <i class="fa-solid fa-xmark"></i> Tolak
+                        </button>` : `<span style="color:var(--muted);font-size:.8rem;">Selesai</span>`}
+                        <button class="btn-neon-purple" onclick="lihatLaporan(${JSON.stringify(r).replace(/"/g,'&quot;')})">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>`).join('') : `<tr><td colspan="7">${emptyHTML('Belum ada laporan masuk')}</td></tr>`;
+
+        document.getElementById('tabContent').innerHTML = `
+        <div style="animation:slideUp .35s ease-out;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem;">
+                <span style="font-family:'Orbitron',sans-serif;font-size:.8rem;color:var(--muted);">
+                    Total: <span style="color:var(--cyan);">${rows.length}</span> laporan
+                </span>
+                <span style="font-family:'Orbitron',sans-serif;font-size:.75rem;color:var(--muted);">
+                    Menunggu: <span style="color:var(--gold);">${rows.filter(r=>r.status==='Menunggu').length}</span>
+                    &nbsp;|&nbsp; Tervalidasi: <span style="color:var(--green);">${rows.filter(r=>r.status==='Tervalidasi').length}</span>
+                </span>
+            </div>
+            <div class="table-wrap">
+                <table class="neon-table">
+                    <thead><tr>
+                        <th>Tanggal</th><th>Pemagang</th><th>Ruang</th>
+                        <th>Tugas</th><th>Durasi</th><th>Status</th><th>Aksi</th>
+                    </tr></thead>
+                    <tbody>${tbody}</tbody>
+                </table>
+            </div>
+        </div>`;
+    } catch(e) { renderErr(e); }
+}
+
+async function aksiValidasi(id, status) {
+    try {
+        const res = await apiPost('validasiLaporan', { id, status, dosenKey: S.user.key });
+        if (res.status === 'ok') {
+            toast(status === 'Tervalidasi' ? 'Laporan disetujui ✅' : 'Laporan ditolak ❌', status === 'Tervalidasi' ? 'success' : 'warn');
+            delete S.cache[S.tab];
+            loadTab(S.tab);
+        } else { toast('Gagal: ' + res.message, 'error'); }
+    } catch(e) { toast('Koneksi gagal', 'error'); }
+}
+
+function lihatLaporan(r) {
+    openModal('Detail Laporan — ' + (r.mahasiswaKey||''), `
+        <div style="display:flex;flex-direction:column;gap:.75rem;font-size:.9rem;">
+            ${detailRow('Pemagang', r.mahasiswaKey, 'var(--cyan)')}
+            ${detailRow('Tanggal', fmtDate(r.tanggal))}
+            ${detailRow('Ruang', r.ruangMagang)}
+            ${detailRow('Durasi', (r.durasi||'-') + ' jam')}
+            ${detailRow('Status', r.status)}
+            <div style="background:rgba(0,243,255,.05);border:1px solid var(--border);border-radius:.65rem;padding:.85rem;">
+                <div style="font-size:.75rem;color:var(--muted);margin-bottom:.4rem;">Detail Tugas</div>
+                <div>${r.detailTugas||'-'}</div>
+            </div>
+            ${r.kendala ? `<div style="background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.2);border-radius:.65rem;padding:.85rem;">
+                <div style="font-size:.75rem;color:var(--gold);margin-bottom:.4rem;">Kendala</div>
+                <div>${r.kendala}</div>
+            </div>` : ''}
+        </div>`);
+}
+
+function detailRow(label, val, color='var(--text)') {
+    return `<div style="display:flex;justify-content:space-between;padding:.5rem .75rem;background:rgba(255,255,255,.03);border-radius:.5rem;">
+        <span style="color:var(--muted);font-size:.82rem;">${label}</span>
+        <span style="color:${color};font-weight:600;">${val||'-'}</span>
+    </div>`;
+}
+
+/* ================================================================
+   ██ TAB: LIHAT JADWAL (MHS)
+   ================================================================ */
+async function tabLihatJadwal() {
+    setTop('Jadwal Magang', 'Daftar jadwal yang tersedia dari dosen pembimbing');
+    skeleton(4);
     try {
         const res = await apiGet('getJadwal');
         const rows = res.data || [];
         const cards = rows.length ? rows.map(r => `
-            <div class="stat-card border border-gray-100">
-                <div class="flex items-start justify-between mb-3">
+            <div class="jadwal-card" style="animation:slideUp .35s ease-out;">
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem;flex-wrap:wrap;">
                     <div>
-                        <h4 class="font-bold text-gray-800 text-base">${r.judul}</h4>
-                        <p class="text-xs text-gray-400 mt-0.5">oleh ${r.dosenKey}</p>
+                        <div style="font-family:'Orbitron',sans-serif;font-size:.9rem;color:var(--text);margin-bottom:.3rem;">${r.judul||'—'}</div>
+                        <div style="font-size:.8rem;color:var(--muted);">oleh <span style="color:var(--cyan);">${r.dosenKey||'—'}</span></div>
                     </div>
-                    <span class="bg-primary-100 text-primary-700 text-xs font-bold px-3 py-1 rounded-full">Kuota: ${r.kuota}</span>
+                    <span style="background:rgba(0,243,255,.1);border:1px solid rgba(0,243,255,.25);color:var(--cyan);
+                                 padding:.3rem .75rem;border-radius:2rem;font-size:.75rem;font-weight:600;white-space:nowrap;">
+                        Kuota: ${r.kuota||'—'}
+                    </span>
                 </div>
-                <div class="grid grid-cols-2 gap-3 text-xs text-gray-600 mb-3">
-                    <div class="bg-gray-50 rounded-lg p-2">
-                        <div class="font-semibold text-gray-500 mb-0.5">📅 Mulai</div>
-                        <div>${r.tanggal}</div>
-                    </div>
-                    <div class="bg-gray-50 rounded-lg p-2">
-                        <div class="font-semibold text-gray-500 mb-0.5">🏁 Selesai</div>
-                        <div>${r.selesai}</div>
-                    </div>
-                    <div class="bg-gray-50 rounded-lg p-2">
-                        <div class="font-semibold text-gray-500 mb-0.5">🏢 Ruang</div>
-                        <div>${r.ruang}</div>
-                    </div>
-                    <div class="bg-gray-50 rounded-lg p-2 col-span-2">
-                        <div class="font-semibold text-gray-500 mb-0.5">📝 Tugas</div>
-                        <div class="line-clamp-2">${r.tugas}</div>
-                    </div>
+                <div class="jadwal-meta">
+                    <div class="jadwal-meta-item"><i class="fa-solid fa-calendar-day"></i> Mulai: ${fmtDate(r.tanggal)}</div>
+                    <div class="jadwal-meta-item"><i class="fa-solid fa-calendar-check"></i> Selesai: ${fmtDate(r.selesai)}</div>
+                    <div class="jadwal-meta-item"><i class="fa-solid fa-door-open"></i> ${r.ruang||'—'}</div>
                 </div>
-            </div>`).join('') : emptyState('Belum ada jadwal dari dosen');
+                <div style="background:rgba(0,243,255,.04);border:1px solid var(--border2);border-radius:.5rem;padding:.75rem;font-size:.85rem;color:var(--muted);line-height:1.5;">
+                    <i class="fa-solid fa-file-lines" style="color:var(--cyan);margin-right:.35rem;"></i>
+                    ${r.tugas||'—'}
+                </div>
+                <div style="margin-top:1rem;">
+                    <button class="btn-neon-cyan" onclick="S.user&&(document.getElementById('nav-pilih-jadwal')&&document.getElementById('nav-pilih-jadwal').click())">
+                        <i class="fa-solid fa-arrow-right-to-bracket"></i> Daftar ke Jadwal Ini
+                    </button>
+                </div>
+            </div>`).join('') : emptyHTML('Belum ada jadwal dari dosen');
 
         document.getElementById('tabContent').innerHTML = `
-        <div class="animate-slide-up">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">${cards}</div>
-        </div>`;
-    } catch(e) {
-        renderError(e);
-    }
+        <div style="display:flex;flex-direction:column;gap:1rem;">${cards}</div>`;
+    } catch(e) { renderErr(e); }
 }
 
-/* ── Pilih Jadwal ───────────────────────────────────────────────── */
-async function renderPilihJadwal() {
-    setTopbar('🗓️ Pilih Waktu Magang', 'Pilih jadwal yang sesuai dengan ketersediaan Anda');
-    showSkeleton(4);
+/* ================================================================
+   ██ TAB: PILIH JADWAL (MHS)
+   ================================================================ */
+async function tabPilihJadwal() {
+    setTop('Pilih Jadwal Magang', 'Daftarkan diri ke jadwal yang tersedia');
+    skeleton(3);
     try {
         const res = await apiGet('getJadwal');
         const rows = res.data || [];
-
-        const options = rows.map(r => `<option value="${r.id}">[${r.tanggal} s/d ${r.selesai}] ${r.judul} — ${r.ruang}</option>`).join('');
-
-        const form = `
-            <div class="mb-4">
-                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Pilih Jadwal <span class="text-red-500">*</span></label>
-                <select id="pilihId" class="input-focus w-full px-3.5 py-2.5 rounded-xl border-2 border-gray-200 text-sm text-gray-800 bg-white">
-                    <option value="">-- Pilih Jadwal Tersedia --</option>${options}
-                </select>
-            </div>
-            ${textareaHTML('pilihCatatan', 'Catatan / Alasan Memilih Jadwal Ini', 'Tuliskan alasan atau catatan Anda...', false)}
-        `;
+        const opts = rows.map(r =>
+            `<option value="${r.id}">[${fmtDate(r.tanggal)} → ${fmtDate(r.selesai)}] ${r.judul} | ${r.ruang}</option>`
+        ).join('');
 
         document.getElementById('tabContent').innerHTML = `
-        <div class="max-w-xl mx-auto animate-slide-up">
-            ${formCard('Daftarkan Diri ke Jadwal Magang', 'Pilih jadwal yang tersedia dan kirimkan pendaftaran', form, 'Daftarkan Diri', 'submitPilihJadwal()')}
+        <div style="max-width:600px;animation:slideUp .35s ease-out;">
+            <div class="neon-card">
+                <div class="card-header-purple">
+                    <div class="card-h-title" style="color:var(--purple);">
+                        <i class="fa-solid fa-calendar-check"></i> &nbsp;Pendaftaran Jadwal
+                    </div>
+                    <div class="card-h-sub">Pilih jadwal yang sesuai jadwal Anda</div>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label class="form-label">Pilih Jadwal <span class="req">*</span></label>
+                        <select id="pJadwal" class="form-input">
+                            <option value="">— Pilih Jadwal Tersedia —</option>
+                            ${opts||'<option disabled>Belum ada jadwal</option>'}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Catatan / Alasan (opsional)</label>
+                        <textarea id="pCatatan" class="form-input" rows="3" placeholder="Tuliskan catatan jika perlu..."></textarea>
+                    </div>
+                    <button id="btnPilih" class="btn-neon-cyan" style="width:100%;justify-content:center;padding:.85rem;" onclick="submitPilihJadwal()">
+                        <i class="fa-solid fa-paper-plane"></i> &nbsp;Kirim Pendaftaran
+                    </button>
+                </div>
+            </div>
         </div>`;
-    } catch(e) {
-        renderError(e);
-    }
+    } catch(e) { renderErr(e); }
 }
 
 async function submitPilihJadwal() {
-    const jadwalId = v('pilihId');
-    const catatan  = v('pilihCatatan');
-    if (!jadwalId) { showToast('Pilih jadwal terlebih dahulu!', 'warn'); return; }
-
-    setBtnLoading(true);
+    const jadwalId = gv('pJadwal');
+    const catatan  = gv('pCatatan');
+    if (!jadwalId) { toast('Pilih jadwal terlebih dahulu!', 'warn'); return; }
+    setLoading('btnPilih', true, 'Mengirim...');
     try {
         const res = await apiPost('pilihJadwal', {
-            jadwalId,
-            catatan,
-            mahasiswaKey: state.user.key,
+            mahasiswaKey: S.user.key, jadwalId, catatan,
             timestamp: new Date().toISOString(),
         });
         if (res.status === 'ok') {
-            showToast('Berhasil mendaftar ke jadwal magang! 🎉', 'success');
-        } else {
-            showToast('Gagal: ' + (res.message || ''), 'error');
-        }
-    } catch(e) {
-        showToast('Koneksi gagal: ' + e.message, 'error');
-    } finally {
-        setBtnLoading(false);
-    }
+            toast('Berhasil mendaftar! Tunggu konfirmasi dosen. 🎉', 'success');
+            document.getElementById('pJadwal').value = '';
+            document.getElementById('pCatatan').value = '';
+        } else { toast('Gagal: ' + (res.message||''), 'error'); }
+    } catch(e) { toast('Koneksi gagal: ' + e.message, 'error'); }
+    finally { setLoading('btnPilih', false, '<i class="fa-solid fa-paper-plane"></i> &nbsp;Kirim Pendaftaran'); }
 }
 
-/* ── Form Laporan ───────────────────────────────────────────────── */
-function renderFormLaporan() {
-    setTopbar('📝 Laporan Selesai Magang', 'Kirimkan laporan aktivitas magang Anda');
-
-    const form = [
-        selectHTML('lapRuang', 'Ruang Magang', [
-            {v:'Lab Komputer A',l:'Lab Komputer A'},
-            {v:'Lab Komputer B',l:'Lab Komputer B'},
-            {v:'Ruang Rapat 1', l:'Ruang Rapat 1'},
-            {v:'Ruang Rapat 2', l:'Ruang Rapat 2'},
-            {v:'Aula Utama',    l:'Aula Utama'},
-        ]),
-        inputHTML('lapTanggal', 'Tanggal Magang', 'date', '', true),
-        textareaHTML('lapDetail', 'Detail Tugas yang Dikerjakan',
-            'Deskripsikan secara lengkap tugas yang Anda kerjakan hari ini...', true),
-        inputHTML('lapDurasi', 'Durasi Kerja (jam)', 'number', 'Mis: 4', true, 'min="1" max="12"'),
-        `<div class="mb-4">
-            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kendala yang Dihadapi</label>
-            <textarea id="lapKendala" rows="2" placeholder="Tuliskan kendala jika ada (opsional)..."
-                      class="input-focus w-full px-3.5 py-2.5 rounded-xl border-2 border-gray-200 text-sm text-gray-800 bg-white resize-none"></textarea>
-        </div>`,
-    ].join('');
-
+/* ================================================================
+   ██ TAB: FORM LAPORAN (MHS)
+   ================================================================ */
+function tabFormLaporan() {
+    setTop('Kirim Laporan Magang', 'Laporan harian aktivitas magang Anda');
     document.getElementById('tabContent').innerHTML = `
-    <div class="max-w-2xl mx-auto animate-slide-up">
-        ${formCard('Form Laporan Magang Harian', 'Isi laporan aktivitas magang Anda dengan lengkap dan jujur', form, 'Kirim Laporan', 'submitLaporan()')}
+    <div style="max-width:680px;animation:slideUp .35s ease-out;">
+        <div class="neon-card">
+            <div class="card-header-green">
+                <div class="card-h-title" style="color:var(--green);">
+                    <i class="fa-solid fa-file-pen"></i> &nbsp;Form Laporan Magang Harian
+                </div>
+                <div class="card-h-sub">Isi laporan dengan jujur dan lengkap</div>
+            </div>
+            <div class="card-body">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Ruang Magang <span class="req">*</span></label>
+                        <select id="lRuang" class="form-input">
+                            <option value="">— Pilih Ruang —</option>
+                            <option>Lab Komputer A</option>
+                            <option>Lab Komputer B</option>
+                            <option>Ruang Rapat 1</option>
+                            <option>Ruang Rapat 2</option>
+                            <option>Aula Utama</option>
+                            <option>Perpustakaan</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tanggal Magang <span class="req">*</span></label>
+                        <input id="lTanggal" type="date" class="form-input">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Detail Tugas yang Dikerjakan <span class="req">*</span></label>
+                    <textarea id="lDetail" class="form-input" rows="4"
+                        placeholder="Deskripsikan secara detail tugas yang Anda kerjakan hari ini..."></textarea>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Durasi Kerja (jam) <span class="req">*</span></label>
+                        <input id="lDurasi" type="number" min="1" max="12" class="form-input" placeholder="Contoh: 4">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Kendala (opsional)</label>
+                        <input id="lKendala" class="form-input" placeholder="Kendala yang dihadapi...">
+                    </div>
+                </div>
+                <button id="btnLaporan" class="btn-neon-cyan"
+                        style="width:100%;justify-content:center;padding:.85rem;border-color:rgba(0,255,136,.3);color:var(--green);background:rgba(0,255,136,.08);"
+                        onmouseover="this.style.background='rgba(0,255,136,.16)'"
+                        onmouseout="this.style.background='rgba(0,255,136,.08)'"
+                        onclick="submitLaporan()">
+                    <i class="fa-solid fa-paper-plane"></i> &nbsp;Kirim Laporan
+                </button>
+            </div>
+        </div>
     </div>`;
 }
 
 async function submitLaporan() {
-    const ruang   = v('lapRuang');
-    const tanggal = v('lapTanggal');
-    const detail  = v('lapDetail');
-    const durasi  = v('lapDurasi');
-    const kendala = v('lapKendala');
+    const ruang   = gv('lRuang');
+    const tanggal = gv('lTanggal');
+    const detail  = gv('lDetail');
+    const durasi  = gv('lDurasi');
+    const kendala = gv('lKendala');
 
-    if (!ruang || !tanggal || !detail || !durasi) {
-        showToast('Lengkapi semua field wajib!', 'warn'); return;
-    }
+    if (!ruang||!tanggal||!detail||!durasi) { toast('Lengkapi semua field wajib!','warn'); return; }
 
-    setBtnLoading(true);
+    setLoading('btnLaporan', true, 'Mengirim...');
     try {
         const res = await apiPost('kirimLaporan', {
-            mahasiswaKey: state.user.key,
-            ruangMagang: ruang,
-            tanggal, detailTugas: detail, durasi, kendala,
+            mahasiswaKey: S.user.key,
+            ruangMagang: ruang, tanggal, detailTugas: detail,
+            durasi, kendala, status: 'Menunggu',
             timestamp: new Date().toISOString(),
-            status: 'Menunggu',
         });
         if (res.status === 'ok') {
-            showToast('Laporan berhasil dikirim! Menunggu validasi dosen. 📨', 'success');
-            ['lapRuang','lapTanggal','lapDetail','lapDurasi','lapKendala'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.value = '';
-            });
-        } else {
-            showToast('Gagal: ' + (res.message || ''), 'error');
-        }
-    } catch(e) {
-        showToast('Koneksi gagal: ' + e.message, 'error');
-    } finally {
-        setBtnLoading(false);
+            toast('Laporan berhasil dikirim! Menunggu validasi dosen. 📨', 'success');
+            ['lRuang','lTanggal','lDetail','lDurasi','lKendala'].forEach(id => { const e=document.getElementById(id);if(e)e.value=''; });
+        } else { toast('Gagal: '+(res.message||''), 'error'); }
+    } catch(e) { toast('Koneksi gagal: '+e.message, 'error'); }
+    finally {
+        setLoading('btnLaporan',false,'<i class="fa-solid fa-paper-plane"></i> &nbsp;Kirim Laporan');
     }
 }
 
 /* ================================================================
-   ███████ ADMIN TABS ███████
+   ██ TAB: RIWAYAT (MHS)
    ================================================================ */
-
-/* ── Rekap Semua Aktivitas ──────────────────────────────────────── */
-async function renderRekap() {
-    setTopbar('📊 Rekap & Monitor Semua Aktivitas', 'Pantau seluruh kegiatan magang secara real-time');
-    showSkeleton(6);
+async function tabRiwayat() {
+    setTop('Riwayat Laporan Saya', 'Semua laporan yang pernah Anda kirimkan');
+    skeleton(4);
     try {
-        const [resLap, resJad] = await Promise.all([
+        const res = await apiGet('getLaporanByMhs', { mahasiswaKey: S.user.key });
+        const rows = (res.data||[]).filter(r => r.mahasiswaKey === S.user.key);
+
+        const tbody = rows.length ? rows.map(r => `
+            <tr>
+                <td>${fmtDate(r.tanggal)}</td>
+                <td>${r.ruangMagang||'-'}</td>
+                <td><span style="display:block;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.detailTugas||'-'}</span></td>
+                <td>${r.durasi||'-'} jam</td>
+                <td>${mkBadge(r.status)}</td>
+                <td>${r.dosenKey||'—'}</td>
+            </tr>`).join('') : `<tr><td colspan="6">${emptyHTML('Belum ada laporan')}</td></tr>`;
+
+        document.getElementById('tabContent').innerHTML = `
+        <div style="animation:slideUp .35s ease-out;">
+            <div class="table-wrap">
+                <table class="neon-table">
+                    <thead><tr>
+                        <th>Tanggal</th><th>Ruang</th><th>Tugas</th>
+                        <th>Durasi</th><th>Status</th><th>Dosen</th>
+                    </tr></thead>
+                    <tbody>${tbody}</tbody>
+                </table>
+            </div>
+        </div>`;
+    } catch(e) { renderErr(e); }
+}
+
+/* ================================================================
+   ██ TAB: REKAP (ADMIN)
+   ================================================================ */
+async function tabRekap() {
+    setTop('Rekap & Monitor Aktivitas', 'Pantau seluruh kegiatan magang secara real-time');
+    skeleton(6);
+    try {
+        const [resL, resJ] = await Promise.all([
             apiGet('getAllLaporan'),
             apiGet('getJadwal'),
         ]);
+        const lap = resL.data || [];
+        const jad = resJ.data || [];
 
-        const laporan = resLap.data  || [];
-        const jadwal  = resJad.data  || [];
+        const valid   = lap.filter(r=>r.status==='Tervalidasi').length;
+        const pending = lap.filter(r=>r.status==='Menunggu').length;
+        const tolak   = lap.filter(r=>r.status==='Ditolak').length;
 
-        // Stat cards
-        const totalValid = laporan.filter(l => l.status === 'Tervalidasi').length;
-        const totalPending = laporan.filter(l => l.status === 'Menunggu').length;
-        const totalTolak = laporan.filter(l => l.status === 'Ditolak').length;
-
-        const stats = `
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            ${statCardHTML('Total Jadwal',  jadwal.length,   '📅', 'from-blue-500 to-blue-700')}
-            ${statCardHTML('Total Laporan', laporan.length,  '📋', 'from-indigo-500 to-indigo-700')}
-            ${statCardHTML('Tervalidasi',   totalValid,      '✅', 'from-emerald-500 to-emerald-700')}
-            ${statCardHTML('Menunggu',      totalPending,    '🕐', 'from-amber-500 to-amber-700')}
-        </div>`;
-
-        // Table laporan
-        const tbody = laporan.length ? laporan.map(r => `
-            <tr class="tbl-row border-b border-gray-50">
-                ${td(r.timestamp ? new Date(r.timestamp).toLocaleDateString('id-ID') : '-')}
-                ${td(r.mahasiswaKey)}
-                ${td(r.ruangMagang)}
-                ${td(r.durasi ? r.durasi + ' jam' : '-')}
-                ${td(`<span class="max-w-[200px] block truncate" title="${r.detailTugas}">${r.detailTugas}</span>`)}
-                ${td(badge(r.status))}
-                ${td(r.dosenKey || '-')}
-            </tr>`).join('') : `<tr><td colspan="7">${emptyState('Belum ada data laporan')}</td></tr>`;
+        const tbody = lap.length ? lap.map(r => `
+            <tr>
+                <td>${fmtDate(r.tanggal||r.timestamp)}</td>
+                <td style="color:var(--cyan);font-family:'Orbitron',sans-serif;font-size:.72rem;">${r.mahasiswaKey||'-'}</td>
+                <td>${r.ruangMagang||'-'}</td>
+                <td>${r.durasi ? r.durasi+' jam' : '-'}</td>
+                <td><span style="display:block;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.detailTugas||'-'}</span></td>
+                <td>${mkBadge(r.status)}</td>
+                <td style="font-size:.78rem;color:var(--muted);">${r.dosenKey||'—'}</td>
+            </tr>`).join('') : `<tr><td colspan="7">${emptyHTML('Belum ada data laporan')}</td></tr>`;
 
         document.getElementById('tabContent').innerHTML = `
-        <div class="animate-slide-up space-y-6">
-            ${stats}
-            ${tableCard('Rekapitulasi Laporan Magang', `Menampilkan ${laporan.length} data laporan`,
-                [th('Tanggal'),th('Pemagang'),th('Ruang'),th('Durasi'),th('Tugas'),th('Status'),th('Dosen')].join(''),
-                tbody
-            )}
+        <div style="display:flex;flex-direction:column;gap:1.25rem;animation:slideUp .35s ease-out;">
+
+            <!-- Stat Cards -->
+            <div class="grid-4">
+                ${mkStat('Jadwal Aktif',  jad.length, 'fa-calendar',      'stat-cyan',   'var(--cyan)')}
+                ${mkStat('Total Laporan', lap.length, 'fa-file-lines',    'stat-purple', 'var(--purple)')}
+                ${mkStat('Tervalidasi',   valid,      'fa-circle-check',  'stat-green',  'var(--green)')}
+                ${mkStat('Menunggu',      pending,    'fa-clock',         'stat-gold',   'var(--gold)')}
+            </div>
+
+            <!-- Table -->
+            <div class="neon-card">
+                <div class="card-header-cyan">
+                    <div class="card-h-title" style="color:var(--cyan);">
+                        <i class="fa-solid fa-table"></i> &nbsp;Rekapitulasi Laporan Magang
+                    </div>
+                    <div class="card-h-sub">Menampilkan ${lap.length} total laporan · Ditolak: ${tolak}</div>
+                </div>
+                <div class="table-wrap" style="border-radius:0;border:none;">
+                    <table class="neon-table">
+                        <thead><tr>
+                            <th>Tanggal</th><th>Pemagang</th><th>Ruang</th>
+                            <th>Durasi</th><th>Tugas</th><th>Status</th><th>Dosen</th>
+                        </tr></thead>
+                        <tbody>${tbody}</tbody>
+                    </table>
+                </div>
+            </div>
         </div>`;
-    } catch(e) {
-        renderError(e);
-    }
+    } catch(e) { renderErr(e); }
 }
 
-function statCardHTML(label, value, icon, gradient) {
-    return `<div class="stat-card relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-20 h-20 rounded-full bg-gradient-to-br ${gradient} opacity-10 translate-x-4 -translate-y-4"></div>
-        <div class="text-3xl mb-1">${icon}</div>
-        <div class="text-3xl font-extrabold text-gray-800">${value}</div>
-        <div class="text-sm text-gray-500 font-medium mt-0.5">${label}</div>
+function mkStat(label, val, icon, cls, color) {
+    return `<div class="stat-card ${cls}">
+        <div class="stat-icon" style="color:${color};"><i class="fa-solid ${icon}"></i></div>
+        <div class="stat-value" style="color:${color};">${val}</div>
+        <div class="stat-label">${label}</div>
     </div>`;
 }
 
-/* ── Semua Jadwal (Admin) ───────────────────────────────────────── */
-async function renderJadwalAll() {
-    setTopbar('📅 Semua Jadwal Magang', 'Monitor seluruh jadwal yang dibuat oleh dosen');
-    showSkeleton(4);
+/* ================================================================
+   ██ TAB: JADWAL ALL (ADMIN)
+   ================================================================ */
+async function tabJadwalAll() {
+    setTop('Semua Jadwal Magang', 'Monitor dan kelola seluruh jadwal dari dosen');
+    skeleton(4);
     try {
         const res = await apiGet('getJadwal');
         const rows = res.data || [];
+
         const tbody = rows.length ? rows.map(r => `
-            <tr class="tbl-row border-b border-gray-50">
-                ${td(r.judul)}
-                ${td(r.dosenKey)}
-                ${td(r.tanggal)}
-                ${td(r.selesai)}
-                ${td(r.ruang)}
-                ${td(r.kuota + ' orang')}
-                <td class="px-4 py-3">
-                    <button onclick="lihatDetailJadwal(${JSON.stringify(r).replace(/"/g,'&quot;')})"
-                            class="text-xs bg-primary-600 hover:bg-primary-700 text-white px-3 py-1.5 rounded-lg font-semibold transition">
-                        👁️ Detail
-                    </button>
-                    <button onclick="hapusJadwal('${r.id}')"
-                            class="text-xs bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg font-semibold transition ml-1">
-                        🗑️ Hapus
-                    </button>
+            <tr>
+                <td style="font-weight:600;color:var(--text);">${r.judul||'-'}</td>
+                <td style="color:var(--cyan);font-size:.78rem;">${r.dosenKey||'-'}</td>
+                <td>${fmtDate(r.tanggal)}</td>
+                <td>${fmtDate(r.selesai)}</td>
+                <td>${r.ruang||'-'}</td>
+                <td style="color:var(--gold);font-weight:600;">${r.kuota||'-'}</td>
+                <td>
+                    <div style="display:flex;gap:.4rem;">
+                        <button class="btn-neon-purple" onclick='lihatJadwalAdmin(${JSON.stringify(r).replace(/"/g,"&quot;")})'>
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                        <button class="btn-neon-red" onclick="hapusJadwalAdmin('${r.id}')">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
                 </td>
-            </tr>`).join('') : `<tr><td colspan="7">${emptyState('Belum ada jadwal')}</td></tr>`;
+            </tr>`).join('') : `<tr><td colspan="7">${emptyHTML('Belum ada jadwal')}</td></tr>`;
 
         document.getElementById('tabContent').innerHTML = `
-        <div class="animate-slide-up">
-            ${tableCard('Daftar Jadwal Magang', `Total: ${rows.length} jadwal`,
-                [th('Judul'),th('Dosen'),th('Mulai'),th('Selesai'),th('Ruang'),th('Kuota'),th('Aksi')].join(''),
-                tbody
-            )}
-        </div>`;
-    } catch(e) {
-        renderError(e);
-    }
-}
-
-function lihatDetailJadwal(r) {
-    openModal('Detail Jadwal: ' + r.judul, `
-        <div class="space-y-3 text-sm">
-            <div class="bg-gray-50 rounded-xl p-3"><span class="text-gray-500 font-semibold">Judul:</span> <span class="text-gray-800">${r.judul}</span></div>
-            <div class="bg-gray-50 rounded-xl p-3"><span class="text-gray-500 font-semibold">Dosen:</span> <span class="text-gray-800">${r.dosenKey}</span></div>
-            <div class="grid grid-cols-2 gap-3">
-                <div class="bg-gray-50 rounded-xl p-3"><span class="text-gray-500 font-semibold">Mulai:</span><br><span class="text-gray-800">${r.tanggal}</span></div>
-                <div class="bg-gray-50 rounded-xl p-3"><span class="text-gray-500 font-semibold">Selesai:</span><br><span class="text-gray-800">${r.selesai}</span></div>
+        <div style="animation:slideUp .35s ease-out;">
+            <div class="table-wrap">
+                <table class="neon-table">
+                    <thead><tr>
+                        <th>Judul</th><th>Dosen</th><th>Mulai</th>
+                        <th>Selesai</th><th>Ruang</th><th>Kuota</th><th>Aksi</th>
+                    </tr></thead>
+                    <tbody>${tbody}</tbody>
+                </table>
             </div>
-            <div class="bg-gray-50 rounded-xl p-3"><span class="text-gray-500 font-semibold">Ruang:</span> <span class="text-gray-800">${r.ruang}</span></div>
-            <div class="bg-gray-50 rounded-xl p-3"><span class="text-gray-500 font-semibold">Kuota:</span> <span class="text-gray-800">${r.kuota} orang</span></div>
-            <div class="bg-blue-50 rounded-xl p-3"><span class="text-gray-500 font-semibold">Deskripsi Tugas:</span><br><span class="text-gray-800">${r.tugas}</span></div>
-        </div>
-    `);
+        </div>`;
+    } catch(e) { renderErr(e); }
 }
 
-async function hapusJadwal(id) {
+function lihatJadwalAdmin(r) {
+    openModal('Detail Jadwal — ' + r.judul, `
+        <div style="display:flex;flex-direction:column;gap:.65rem;font-size:.9rem;">
+            ${detailRow('Judul', r.judul, 'var(--cyan)')}
+            ${detailRow('Dosen', r.dosenKey, 'var(--cyan)')}
+            ${detailRow('Mulai', fmtDate(r.tanggal))}
+            ${detailRow('Selesai', fmtDate(r.selesai))}
+            ${detailRow('Ruang', r.ruang)}
+            ${detailRow('Kuota', r.kuota + ' orang')}
+            <div style="background:rgba(0,243,255,.04);border:1px solid var(--border);border-radius:.65rem;padding:.85rem;">
+                <div style="font-size:.75rem;color:var(--muted);margin-bottom:.4rem;">Deskripsi Tugas</div>
+                <div>${r.tugas||'-'}</div>
+            </div>
+        </div>`);
+}
+
+async function hapusJadwalAdmin(id) {
     if (!confirm('Yakin ingin menghapus jadwal ini?')) return;
     try {
-        const res = await apiPost('hapusJadwal', { id, adminKey: state.user.key });
-        if (res.status === 'ok') {
-            showToast('Jadwal berhasil dihapus!', 'success');
-            loadTab('jadwal-all');
-        } else {
-            showToast('Gagal: ' + (res.message || ''), 'error');
-        }
-    } catch(e) {
-        showToast('Koneksi gagal: ' + e.message, 'error');
-    }
+        const res = await apiPost('hapusJadwal', { id, adminKey: S.user.key });
+        if (res.status === 'ok') { toast('Jadwal dihapus!', 'success'); loadTab('jadwal-all'); }
+        else { toast('Gagal: ' + res.message, 'error'); }
+    } catch(e) { toast('Koneksi gagal', 'error'); }
 }
 
-/* ── Manajemen Key (Admin) ──────────────────────────────────────── */
-function renderUsers() {
-    setTopbar('👥 Manajemen Key Akses', 'Panduan format key untuk setiap peran');
+/* ================================================================
+   ██ TAB: INFO SISTEM (ADMIN)
+   ================================================================ */
+function tabInfo() {
+    setTop('Info Sistem', 'Konfigurasi dan panduan Portal Magang');
     document.getElementById('tabContent').innerHTML = `
-    <div class="max-w-2xl mx-auto space-y-5 animate-slide-up">
+    <div style="max-width:720px;display:flex;flex-direction:column;gap:1.25rem;animation:slideUp .35s ease-out;">
 
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-            <h3 class="font-bold text-gray-800 text-base mb-4">📋 Format Key Akses</h3>
-            <div class="space-y-3">
-                ${keyFormatCard('DOSEN', 'DOSEN + nomor unik', 'DOSEN001, DOSEN002', 'bg-primary-50 border-primary-200 text-primary-800', '🎓')}
-                ${keyFormatCard('MHS',   'MHS + NIM/nomor',    'MHS12345, MHS001',   'bg-emerald-50 border-emerald-200 text-emerald-800', '🎒')}
-                ${keyFormatCard('ADMIN', 'ADMIN + kode admin', 'ADMIN999, ADMIN001', 'bg-amber-50 border-amber-200 text-amber-800', '🔐')}
+        <div class="neon-card">
+            <div class="card-header-gold">
+                <div class="card-h-title" style="color:var(--gold);"><i class="fa-solid fa-gear"></i> &nbsp;Konfigurasi Google Apps Script</div>
+            </div>
+            <div class="card-body">
+                <p style="color:var(--muted);font-size:.88rem;margin-bottom:1rem;">
+                    Ganti URL berikut di file <code style="color:var(--cyan);background:rgba(0,243,255,.08);padding:.1rem .4rem;border-radius:.3rem;">index.php</code> baris ~580:
+                </p>
+                <div style="background:#030810;border:1px solid var(--border);border-radius:.65rem;padding:1rem;font-family:monospace;font-size:.82rem;overflow-x:auto;">
+                    <span style="color:var(--muted);">// Ganti nilai SCRIPT_URL:</span><br>
+                    <span style="color:var(--cyan);">const</span> <span style="color:var(--text);">SCRIPT_URL</span>
+                    <span style="color:var(--gold);"> = </span>
+                    <span style="color:#ff9f7f;">'https://script.google.com/macros/s/<span style="color:var(--purple);">AKfycb.../exec</span>'</span><span style="color:var(--text);">;</span>
+                </div>
             </div>
         </div>
 
-        <div class="bg-amber-50 border border-amber-200 rounded-2xl p-5 text-sm text-amber-800">
-            <div class="font-bold mb-2">⚠️ Keamanan Key</div>
-            <ul class="list-disc list-inside space-y-1 text-xs">
-                <li>Bagikan key hanya kepada pengguna yang berwenang</li>
-                <li>Key bersifat case-insensitive (otomatis diubah ke HURUF KAPITAL)</li>
-                <li>Simpan daftar key di spreadsheet admin yang terpisah</li>
-                <li>Ganti key secara berkala untuk keamanan</li>
-            </ul>
+        <div class="neon-card">
+            <div class="card-header-cyan">
+                <div class="card-h-title" style="color:var(--cyan);"><i class="fa-solid fa-key"></i> &nbsp;Format Key Akses</div>
+            </div>
+            <div class="card-body">
+                <div style="display:flex;flex-direction:column;gap:.65rem;">
+                    ${keyInfo('DOSEN', 'fa-chalkboard-user', 'var(--cyan)',   'rgba(0,243,255,.1)',   'rgba(0,243,255,.2)',   'DOSEN001, DOSEN_BUDI')}
+                    ${keyInfo('MHS',   'fa-user-graduate',   'var(--purple)', 'rgba(157,78,221,.1)', 'rgba(157,78,221,.2)', 'MHS12345, MHS001')}
+                    ${keyInfo('ADMIN', 'fa-shield-halved',   'var(--gold)',   'rgba(212,175,55,.1)', 'rgba(212,175,55,.2)', 'ADMIN999, ADMIN001')}
+                </div>
+            </div>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-            <h3 class="font-bold text-gray-800 text-base mb-4">🔧 Konfigurasi Google Apps Script</h3>
-            <div class="bg-gray-900 text-green-400 rounded-xl p-4 font-mono text-xs overflow-x-auto">
-                <div class="text-gray-400">// Ganti URL berikut di index.php line ~218:</div>
-                <div class="mt-1">const scriptURL = '<span class="text-yellow-300">YOUR_GOOGLE_APPS_SCRIPT_URL</span>';</div>
+        <div class="alert alert-warn">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <div>
+                <strong>Keamanan:</strong> Bagikan key hanya ke pengguna berwenang.
+                Key bersifat case-insensitive — otomatis diubah ke huruf kapital.
             </div>
-            <p class="text-xs text-gray-500 mt-3">Lihat <code>README.md</code> untuk panduan lengkap setup Google Apps Script.</p>
+        </div>
+
+        <div class="neon-card">
+            <div class="card-header-purple">
+                <div class="card-h-title" style="color:var(--purple);"><i class="fa-brands fa-github"></i> &nbsp;Repository GitHub</div>
+            </div>
+            <div class="card-body">
+                <a href="https://github.com/Zenwhite96/portal-magang" target="_blank"
+                   style="display:inline-flex;align-items:center;gap:.5rem;color:var(--purple);
+                          text-decoration:none;font-weight:600;font-size:.9rem;">
+                    <i class="fa-brands fa-github"></i>
+                    github.com/Zenwhite96/portal-magang
+                </a>
+                <p style="color:var(--muted);font-size:.8rem;margin-top:.5rem;">
+                    Push update: <code style="color:var(--cyan);background:rgba(0,243,255,.08);padding:.1rem .4rem;border-radius:.3rem;">git add . && git commit -m "update" && git push</code>
+                </p>
+            </div>
         </div>
     </div>`;
 }
 
-function keyFormatCard(role, format, contoh, cls, icon) {
-    return `<div class="border rounded-xl p-4 ${cls}">
-        <div class="flex items-center gap-2 font-bold text-sm mb-1">${icon} Role: ${role}</div>
-        <div class="text-xs opacity-80">Format: <code class="font-mono">${format}</code></div>
-        <div class="text-xs opacity-80 mt-0.5">Contoh: <code class="font-mono">${contoh}</code></div>
+function keyInfo(role, icon, color, bg, border, contoh) {
+    return `<div style="display:flex;align-items:center;gap:1rem;padding:.85rem 1rem;
+                        background:${bg};border:1px solid ${border};border-radius:.65rem;">
+        <i class="fa-solid ${icon}" style="color:${color};font-size:1.25rem;width:24px;text-align:center;"></i>
+        <div>
+            <div style="font-family:'Orbitron',sans-serif;font-size:.78rem;color:${color};">${role}</div>
+            <div style="font-size:.8rem;color:var(--muted);">Contoh: <code style="color:var(--text);">${contoh}</code></div>
+        </div>
     </div>`;
 }
 
 /* ================================================================
    ERROR STATE
    ================================================================ */
-function renderError(e) {
+function renderErr(e) {
     document.getElementById('tabContent').innerHTML = `
-    <div class="max-w-lg mx-auto">
-        <div class="bg-red-50 border border-red-200 rounded-2xl p-8 text-center">
-            <div class="text-5xl mb-3">⚠️</div>
-            <h3 class="font-bold text-red-700 text-lg mb-2">Gagal Memuat Data</h3>
-            <p class="text-red-600 text-sm mb-4">${e.message}</p>
-            <div class="bg-red-100 rounded-xl p-3 text-xs text-red-700 text-left mb-4">
+    <div style="max-width:520px;">
+        <div class="error-box">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <h3>Gagal Memuat Data</h3>
+            <p>${e.message}</p>
+            <div class="error-detail">
                 <strong>Kemungkinan penyebab:</strong><br>
-                • URL Google Apps Script belum diisi di <code>index.php</code><br>
-                • Web App belum di-deploy dengan akses "Anyone"<br>
+                • <code>SCRIPT_URL</code> di index.php belum diisi<br>
+                • Google Apps Script belum di-deploy sebagai Web App<br>
+                • Akses "Anyone" belum diset di GAS deployment<br>
                 • Koneksi internet bermasalah
             </div>
-            <button onclick="loadTab(state.tab)"
-                    class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-xl text-sm font-bold transition">
-                🔄 Coba Lagi
+            <button class="btn-neon-cyan" onclick="loadTab(S.tab)">
+                <i class="fa-solid fa-rotate-right"></i> Coba Lagi
             </button>
         </div>
     </div>`;
 }
 
 /* ================================================================
-   UTILITY
+   LOADING BUTTON
    ================================================================ */
-function v(id)  { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
-
-function setBtnLoading(loading) {
-    const btns = document.querySelectorAll('#tabContent button[onclick*="submit"]');
-    btns.forEach(btn => {
-        if (loading) {
-            btn._orig = btn.innerHTML;
-            btn.innerHTML = '<span class="spinner"></span>&nbsp; Menyimpan...';
-            btn.disabled = true;
-        } else {
-            if (btn._orig) btn.innerHTML = btn._orig;
-            btn.disabled = false;
-        }
-    });
+function setLoading(btnId, on, offHtml='') {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    if (on) {
+        btn._orig = btn.innerHTML;
+        btn.innerHTML = '<span class="spinner"></span>&nbsp; Menyimpan...';
+        btn.disabled = true;
+    } else {
+        btn.innerHTML = offHtml || btn._orig || '';
+        btn.disabled = false;
+    }
 }
 
 /* ================================================================
    SESSION RESTORE
    ================================================================ */
-(function restoreSession() {
-    const stored = sessionStorage.getItem('portalUser');
-    if (stored) {
-        try {
-            state.user = JSON.parse(stored);
-            bootDashboard();
-        } catch { sessionStorage.removeItem('portalUser'); }
-    }
+(function() {
+    try {
+        const s = sessionStorage.getItem('pmUser');
+        if (s) { S.user = JSON.parse(s); initDashboard(); }
+    } catch { sessionStorage.removeItem('pmUser'); }
 })();
 </script>
 
