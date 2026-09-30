@@ -646,7 +646,7 @@ p,label,span,td,th,input,select,textarea,button{font-family:'Rajdhani',sans-seri
    2. Deploy → Web App → Execute as: Me → Who has access: Anyone
    3. Salin URL deployment → paste di bawah ini (ganti seluruh string)
    ================================================================ */
-const SCRIPT_URL = 'https://script.google.com/macros/s/GANTI_DENGAN_URL_DEPLOYMENT_ANDA/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz5MK2jbf-SkPuO0sXYYGgCmCIvVdZpMGjCecmC46TnkIM8cEyr5Ha2i1v6v40ngE-UkQ/exec';
 
 /* ================================================================
    STATE
