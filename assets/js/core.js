@@ -116,7 +116,15 @@ const App = {
         this.ui.photos = [];
         this.buildShell();
         this.show('app');
-        await this.go(NAV[this.user.role].tabs[0].id, { force: true });
+        try {
+            await this.go(NAV[this.user.role].tabs[0].id, { force: true });
+        } catch (e) {
+            // fetchData gagal total (misal backend lama) -> tampilkan error di view
+            const host = UI.$('#view');
+            if (host && !host.querySelector('[data-act="retry"]')) {
+                host.innerHTML = UI.errorState(e);
+            }
+        }
     },
 
     /* ---------- navigasi & render ---------- */

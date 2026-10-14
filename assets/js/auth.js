@@ -33,8 +33,13 @@ const Auth = (() => {
             setConn('ok', `Terhubung · ${names.length} pemagang terdaftar`);
         } catch (e) {
             names = [];
-            setConn('err', e.message.length > 90 ? e.message.slice(0, 90) + '…' : e.message);
+            const msg = e.message.length > 90 ? e.message.slice(0, 90) + '…' : e.message;
+            setConn('err', msg);
             UI.$('#conn').title = e.message;
+            // Tampilkan toast agar pengguna tahu masalahnya
+            if (e.code === 'OLD_BACKEND') {
+                UI.toast('Backend Apps Script masih versi lama. Salin kode baru & deploy versi baru.', 'err', 8000);
+            }
         }
         fillNames();
     }

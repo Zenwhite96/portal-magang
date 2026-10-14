@@ -39,7 +39,7 @@ function asset(string $path): string
 <!-- =====================================================================
      HALAMAN LOGIN
      ===================================================================== -->
-<div id="login-screen" class="screen login-bg" hidden>
+<div id="login-screen" class="screen login-bg">
     <div class="login-card">
         <div class="flex items-center gap-3 mb-5">
             <span class="logo">
@@ -52,7 +52,7 @@ function asset(string $path): string
         </div>
 
         <div class="flex items-center gap-2 flex-wrap mb-6">
-            <span class="conn load" id="conn" role="status"><span class="dot"></span><span id="connText">Menghubungkan…</span></span>
+            <span class="conn load" id="conn" role="status"><span class="dot"></span><span id="connText">Menghubungkan ke server…</span></span>
             <button type="button" id="connRetry" class="btn btn-ghost btn-sm hidden">Coba lagi</button>
         </div>
 
