@@ -28,17 +28,33 @@ const Auth = (() => {
     async function loadNames() {
         setConn('load', 'Menghubungkan ke server…');
         try {
+            /* Coba koneksi nyata dulu */
             const res = await Api.get('pemagangPublic');
             names = res.data || [];
             setConn('ok', `Terhubung · ${names.length} pemagang terdaftar`);
         } catch (e) {
-            names = [];
-            const msg = e.message.length > 90 ? e.message.slice(0, 90) + '…' : e.message;
-            setConn('err', msg);
-            UI.$('#conn').title = e.message;
-            // Tampilkan toast agar pengguna tahu masalahnya
-            if (e.code === 'OLD_BACKEND') {
-                UI.toast('Backend Apps Script masih versi lama. Salin kode baru & deploy versi baru.', 'err', 8000);
+            /* Gagal -> aktifkan demo mode, coba lagi dengan data demo */
+            Api.activateDemo();
+            try {
+                const res2 = await Api.get('pemagangPublic');
+                names = res2.data || [];
+                setConn('ok', `MODE DEMO · ${names.length} pemagang contoh`);
+            } catch (e2) {
+                names = [];
+                setConn('err', e2.message);
+            }
+        }
+        /* Tampilkan banner demo */
+        if (Api.isDemo()) {
+            const existing = UI.$('#demoBanner');
+            if (!existing) {
+                const banner = document.createElement('div');
+                banner.id = 'demoBanner';
+                banner.className = 'alert alert-info';
+                banner.style.cssText = 'margin:0 0 12px;font-size:13px';
+                banner.innerHTML = `${UI.icon('info', 'w-5 h-5')}<div><b>Mode Demo</b> — Backend belum terhubung. Data contoh di memori, perubahan tidak tersimpan.
+                    <br>Untuk menghubungkan ke server: salin <code>backend/google-apps-script.js</code> ke Google Apps Script, jalankan <code>setup</code>, lalu deploy versi baru.</div>`;
+                UI.$('.login-card').insertBefore(banner, UI.$('#loginForm'));
             }
         }
         fillNames();

@@ -125,6 +125,16 @@ const App = {
                 host.innerHTML = UI.errorState(e);
             }
         }
+        /* Banner demo mode di dashboard */
+        if (Api.isDemo() && !UI.$('#appDemoBanner')) {
+            const b = document.createElement('div');
+            b.id = 'appDemoBanner';
+            b.className = 'alert alert-info';
+            b.style.cssText = 'margin:0 0 -4px;font-size:12.5px';
+            b.innerHTML = `${UI.icon('info', 'w-4 h-4')}<div><b>Mode Demo</b> — Data contoh, perubahan tidak tersimpan ke server.</div>`;
+            const view = UI.$('#view');
+            if (view) view.parentNode.insertBefore(b, view);
+        }
     },
 
     /* ---------- navigasi & render ---------- */
