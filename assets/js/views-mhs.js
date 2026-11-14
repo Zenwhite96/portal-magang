@@ -294,7 +294,11 @@
                 <td>${V.thumbs(l)}</td><td>${UI.badge(l.status)}</td>
                 <td><div class="actions"><button class="btn btn-sm btn-outline" data-act="lap-view" data-id="${esc(l.id)}">${icon('eye')}Detail</button>
                     ${l.status !== 'Tervalidasi' ? `<button class="btn btn-sm btn-danger" data-act="lap-hapus" data-id="${esc(l.id)}">${icon('trash')}</button>` : ''}</div></td></tr>`).join('');
-            return V.card('Riwayat laporan', `${rows.length} laporan`, `<div class="table-wrap"><table class="table"><thead><tr>
+            return V.card('Riwayat laporan', `${rows.length} laporan`,
+                `<div class="flex justify-end gap-2 mb-3">
+                    <button class="btn btn-sm btn-outline" data-act="mhs-cetak-rekap">${icon('printer')}Cetak Lembar Presensi</button>
+                 </div>
+                 <div class="table-wrap"><table class="table"><thead><tr>
                 <th>Tanggal &amp; waktu</th><th>Kegiatan</th><th>Foto</th><th>Status</th><th></th></tr></thead><tbody>${body}</tbody></table></div>`);
         },
     };
@@ -305,5 +309,90 @@
     Actions['lap-hapus'] = async (btn) => {
         const ok = await UI.confirmDialog({ title: 'Hapus laporan?', message: 'Laporan beserta foto buktinya akan dihapus permanen.', confirmText: 'Hapus', danger: true });
         if (ok) App.run(btn, () => App.mutate('hapusLaporan', { id: btn.dataset.id }, 'Laporan dihapus.'));
+    };
+
+    Actions['mhs-cetak-rekap'] = () => {
+        const u = App.user;
+        const p = App.idx.pemagang.get(u.nim) || u;
+        const laporans = App.data.laporan;
+        const h = App.hours(u.nim);
+
+        const printWindow = window.open('', '_blank');
+        if (!printWindow) return UI.toast('Izinkan jendela sembul (pop-up) untuk mencetak laporan.', 'warn');
+
+        const rowsHtml = laporans.map((l, i) => `
+            <tr>
+                <td style="text-align:center;padding:7px;border:1px solid #444">${i + 1}</td>
+                <td style="padding:7px;border:1px solid #444">${UI.fmtDate(l.tanggal)}</td>
+                <td style="text-align:center;padding:7px;border:1px solid #444">${esc(l.jamMulai)} - ${esc(l.jamSelesai)}</td>
+                <td style="padding:7px;border:1px solid #444">${esc(l.kegiatan)}</td>
+                <td style="text-align:center;padding:7px;border:1px solid #444">${l.durasiJam} Jam</td>
+                <td style="text-align:center;padding:7px;border:1px solid #444"><b>${esc(l.status)}</b></td>
+            </tr>
+        `).join('');
+
+        printWindow.document.write(`<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <title>Lembar Kegiatan Magang - ${esc(p.nama)}</title>
+    <style>
+        body { font-family: 'Times New Roman', serif; margin: 30px; font-size: 13px; color: #111; line-height: 1.4; }
+        .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 16px; }
+        .header h2 { margin: 0; font-size: 18px; text-transform: uppercase; }
+        .header p { margin: 2px 0; font-size: 12.5px; }
+        table.meta { width: 100%; margin-bottom: 15px; border-collapse: collapse; }
+        table.meta td { padding: 4px 6px; }
+        table.data { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        table.data th { background: #f2f2f2; border: 1px solid #444; padding: 7px; font-weight: bold; }
+        .sign { width: 100%; margin-top: 40px; display: flex; justify-content: space-between; }
+        .sign-box { width: 45%; text-align: center; }
+        @media print { body { margin: 15mm; } button { display: none; } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>UNIVERSITAS NASIONAL PASIM</h2>
+        <p><b>LEMBAR REKAPITULASI KEGIATAN &amp; PRESENSI MAGANG</b></p>
+        <p>Ruang: ${esc(CONFIG.RUANG)} · Tahun Akademik ${new Date().getFullYear()}</p>
+    </div>
+    <table class="meta">
+        <tr><td width="20%"><b>Nama Pemagang</b></td><td width="30%">: ${esc(p.nama)}</td><td width="20%"><b>Dosen Pembimbing</b></td><td width="30%">: ${esc(p.dosenKey || 'DOSEN001')}</td></tr>
+        <tr><td><b>NIM</b></td><td>: ${esc(p.nim)}</td><td><b>Total Jam Tervalidasi</b></td><td>: <b>${h.valid} / ${CONFIG.TARGET_JAM} Jam</b></td></tr>
+        <tr><td><b>Program Studi</b></td><td>: ${esc(p.prodi || '-')}</td><td><b>Status Target</b></td><td>: ${h.valid >= CONFIG.TARGET_JAM ? 'Terpenuhi (Selesai)' : 'Dalam Proses'}</td></tr>
+    </table>
+    <table class="data">
+        <thead>
+            <tr>
+                <th width="5%">No</th>
+                <th width="15%">Tanggal</th>
+                <th width="15%">Jam</th>
+                <th>Uraian Kegiatan Magang</th>
+                <th width="12%">Durasi</th>
+                <th width="15%">Status Validasi</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${rowsHtml || '<tr><td colspan="6" style="text-align:center;padding:12px">Belum ada catatan kegiatan</td></tr>'}
+        </tbody>
+    </table>
+    <div class="sign">
+        <div class="sign-box">
+            <p>Mengetahui,<br>Dosen Pembimbing</p>
+            <br><br><br>
+            <p><b>( _________________________ )</b><br>NIDN. </p>
+        </div>
+        <div class="sign-box">
+            <p>Bandung, ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}<br>Mahasiswa Pemagang</p>
+            <br><br><br>
+            <p><b>( ${esc(p.nama)} )</b><br>NIM. ${esc(p.nim)}</p>
+        </div>
+    </div>
+    <script>
+        window.onload = function() { window.print(); };
+    </script>
+</body>
+</html>`);
+        printWindow.document.close();
     };
 })();

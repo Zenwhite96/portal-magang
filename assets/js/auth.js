@@ -29,9 +29,13 @@ const Auth = (() => {
         setConn('load', 'Menghubungkan ke server…');
         try {
             /* Coba koneksi nyata dulu */
-            const res = await Api.get('pemagangPublic');
+            const [res, pingRes] = await Promise.all([
+                Api.get('pemagangPublic'),
+                Api.get('ping').catch(() => null)
+            ]);
             names = res.data || [];
-            setConn('ok', `Terhubung · ${names.length} pemagang terdaftar`);
+            const driverInfo = pingRes && pingRes.driver ? ` [${pingRes.driver.toUpperCase()}]` : '';
+            setConn('ok', `Terhubung${driverInfo} · ${names.length} pemagang terdaftar`);
         } catch (e) {
             /* Gagal -> aktifkan demo mode, coba lagi dengan data demo */
             Api.activateDemo();

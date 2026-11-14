@@ -160,8 +160,13 @@
         try {
             const r = await Api.get('ping');
             if (!UI.$('#pingOut')) return;
-            out.innerHTML = `<div class="alert alert-ok">${icon('check', 'w-5 h-5')}<div><b>Terhubung ke Google Sheets</b> (${Math.round(performance.now() - t0)} ms)</div></div>
-                <dl class="kv" style="margin-top:14px"><dt>Spreadsheet</dt><dd>${esc(r.spreadsheet)}</dd><dt>Sheet</dt><dd>${(r.sheets || []).map((s) => `<code>${esc(s)}</code>`).join(' ')}</dd>
+            const label = r.driver ? `Terhubung ke Backend PHP (Database: ${r.driver.toUpperCase()})` : 'Terhubung ke Backend';
+            out.innerHTML = `<div class="alert alert-ok">${icon('check', 'w-5 h-5')}<div><b>${label}</b> (${Math.round(performance.now() - t0)} ms)</div></div>
+                <dl class="kv" style="margin-top:14px">
+                ${r.driver ? `<dt>Database</dt><dd><span class="badge badge-ok">${esc(r.driver.toUpperCase())}</span></dd>` : ''}
+                ${r.engine ? `<dt>Server Engine</dt><dd>${esc(r.engine)}</dd>` : ''}
+                ${r.spreadsheet ? `<dt>Spreadsheet</dt><dd>${esc(r.spreadsheet)}</dd>` : ''}
+                ${r.sheets ? `<dt>Sheet</dt><dd>${(r.sheets || []).map((s) => `<code>${esc(s)}</code>`).join(' ')}</dd>` : ''}
                 <dt>Versi backend</dt><dd>${esc(r.versi)}</dd><dt>Ruang</dt><dd>${esc(r.ruang)}</dd><dt>Waktu server</dt><dd>${esc(r.waktu)}</dd></dl>`;
         } catch (e) {
             if (!UI.$('#pingOut')) return;

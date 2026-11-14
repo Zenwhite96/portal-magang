@@ -1,0 +1,13 @@
+# Cegah eksekusi script PHP di dalam folder uploads
+<FilesMatch "\.(php|php5|php7|php8|phtml|pl|py|jsp|asp|htm|shtml|sh|cgi)$">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch>
+
+# Izinkan file gambar
+<FilesMatch "\.(jpe?g|png|gif|webp|svg)$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
+
+Options -Indexes

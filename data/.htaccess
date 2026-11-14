@@ -1,0 +1,3 @@
+# Blokir seluruh akses HTTP langsung ke folder database
+Order Deny,Allow
+Deny from all

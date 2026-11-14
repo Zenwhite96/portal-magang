@@ -8,7 +8,7 @@ class ApiError extends Error {
 }
 
 const Api = (() => {
-    const isConfigured = () => /^https?:\/\//i.test(CONFIG.SCRIPT_URL) && !/GANTI|YOUR_|URL_ANDA/i.test(CONFIG.SCRIPT_URL);
+    const isConfigured = () => typeof CONFIG.SCRIPT_URL === 'string' && CONFIG.SCRIPT_URL.trim().length > 0 && !/GANTI|YOUR_|URL_ANDA/i.test(CONFIG.SCRIPT_URL);
 
     /* ================================================================
        MODE DEMO — data contoh di memori, aktif saat backend gagal.
@@ -250,18 +250,19 @@ const Api = (() => {
     /** GET  -> ?action=...&param=... */
     function get(action, params = {}) {
         if (_demo) return Promise.resolve(demoGet(action, params));
-        const u = new URL(CONFIG.SCRIPT_URL);
+        const u = new URL(CONFIG.SCRIPT_URL, window.location.href);
         u.searchParams.set('action', action);
         Object.entries(params).forEach(([k, v]) => { if (v !== undefined && v !== null && v !== '') u.searchParams.set(k, v); });
         return request(u.toString(), { method: 'GET' });
     }
 
-    /** POST -> body JSON (text/plain agar tidak memicu preflight CORS) */
+    /** POST -> body JSON */
     function post(action, data = {}) {
         if (_demo) return Promise.resolve(demoPost(action, data));
-        return request(CONFIG.SCRIPT_URL, {
+        const u = new URL(CONFIG.SCRIPT_URL, window.location.href);
+        return request(u.toString(), {
             method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            headers: { 'Content-Type': 'application/json;charset=utf-8' },
             body: JSON.stringify({ action, ...data }),
         });
     }

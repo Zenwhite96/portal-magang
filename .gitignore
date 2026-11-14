@@ -26,3 +26,8 @@ desktop.ini
 # Environment (jangan push konfigurasi sensitif)
 .env
 config.local.php
+
+# Local Database & Uploads
+data/*.sqlite*
+uploads/bukti_*
+
